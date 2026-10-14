@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>ML/DL Practice Quiz (50 Questions)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background: #f5f7fb;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .question {
+      margin-bottom: 25px;
+      padding: 15px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .options label {
+      display: block;
+      margin: 4px 0;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1e4fd6;
+    }
+
+    .result {
+      margin-top: 30px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .correct {
+      color: green;
+    }
+
+    .wrong {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Bài tập Trắc nghiệm ML / Deep Learning & Tính Toán (200 Câu)</h1>
+  <p>Chọn câu trả lời ở từng dòng. Đáp án và giải thích sẽ hiện ra ngay lập tức. Sau khi hoàn thành có thể nhấn <b>Nộp
+      bài</b>.</p>
+
+  <form id="quizForm"></form>
+
+  <button onclick="submitQuiz()">Nộp bài</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+
+    const quizData = [
+      {
+        q: "1. Trong học có giám sát (supervised learning), tập dữ liệu huấn luyện phải chứa:",
+        options: ["Không có nhãn", "Nhãn đầu ra (Output labels)", "Chỉ dữ liệu kiểm tra (test data)", "Chỉ các đặc trưng (features)"], answer: 1
+      },
+      {
+        q: "2. Hiện tượng Overfitting (quá khớp) xảy ra khi nào?",
+        options: ["Mô hình quá đơn giản", "Mô hình ghi nhớ tạp âm/học vẹt tập huấn luyện", "Dataset quá lớn", "Mô hình không thể học được các mẫu đặc trưng"], answer: 1
+      },
+      {
+        q: "3. Thuật toán nào sau đây là học không giám sát (unsupervised algorithm)?",
+        options: ["Logistic Regression", "Decision Tree", "K-means", "Random Forest"], answer: 2
+      },
+      {
+        q: "4. Bias cao thường dẫn đến điều gì?",
+        options: ["Overfitting (Quá khớp)", "Underfitting (Chưa khớp)", "Data leakage (Rò rỉ dữ liệu)", "Noise (Nhiễu)"], answer: 1
+      },
+      {
+        q: "5. Trong thuật toán KNN, tham số k được dùng để xác định:",
+        options: ["Learning rate", "Số lượng láng giềng kề nhất", "Số lượng features (đặc trưng)", "Batch size"], answer: 1
+      },
+      {
+        q: "6. Một metric thường dùng cho các mô hình Regression (hồi quy) là:",
+        options: ["Accuracy", "Mean Squared Error (MSE)", "Precision", "Recall"], answer: 1
+      },
+      {
+        q: "7. Kỹ thuật Feature scaling đặc biệt quan trọng đối với thuật toán nào?",
+        options: ["Decision Trees", "Random Forest", "SVM", "Naive Bayes"], answer: 2
+      },
+      {
+        q: "8. Kỹ thuật Cross-validation dùng để:",
+        options: ["Tăng kích thước dataset", "Đánh giá khả năng tổng quát hóa của mô hình", "Tăng tốc độ huấn luyện", "Giảm số lượng features"], answer: 1
+      },
+      {
+        q: "9. Kỹ thuật Regularization (điều chuẩn) có tác dụng:",
+        options: ["Tăng learning rate", "Giảm overfitting", "Tăng số lượng feature", "Giảm batch size"], answer: 1
+      },
+      {
+        q: "10. Đối với imbalanced classification (phân loại mất cân bằng), metric nào tốt hơn Accuracy?",
+        options: ["F1-score", "MSE", "RMSE", "MAE"], answer: 0
+      },
+      {
+        q: "11. Hàm kích hoạt (Activation functions) bổ sung điều gì cho mạng nơ-ron?",
+        options: ["Tính tuyến tính (Linearity)", "Tính phi tuyến (Non-linearity)", "Thêm số neuron", "Learning rate"], answer: 1
+      },
+      {
+        q: "12. Hàm ReLU được định nghĩa theo công thức nào:",
+        options: ["x^2", "max(0, x)", "1/(1+e^-x)", "tanh(x)"], answer: 1
+      },
+      {
+        q: "13. Softmax thường được sử dụng ở lớp đầu ra cho bài toán:",
+        options: ["Regression (Hồi quy)", "Binary classification (Phân loại nhị phân)", "Multi-class classification (Phân loại đa lớp)", "Clustering (Phân cụm)"], answer: 2
+      },
+      {
+        q: "14. Loss function (hàm mất mát) phổ biến của bài toán phân loại:",
+        options: ["MSE", "Cross entropy", "RMSE", "MAE"], answer: 1
+      },
+      {
+        q: "15. Thuật toán Gradient descent được dùng để:",
+        options: ["Làm tăng hàm mất mát (loss)", "Cập nhật trọng số (weights)", "Chuẩn hóa dữ liệu", "Giảm batch size"], answer: 1
+      },
+      {
+        q: "16. Learning rate quá lớn có thể dẫn đến việc:",
+        options: ["Làm chậm quá trình training", "Ngăn mô hình hội tụ (Prevent convergence)", "Gây ra overfitting", "Gây ra underfitting"], answer: 1
+      },
+      {
+        q: "17. Hiện tượng Vanishing gradient (triệt tiêu đạo hàm) chủ yếu xảy ra trong cấu trúc:",
+        options: ["Shallow networks (Mạng nông)", "Very deep networks (Mạng rất sâu)", "Decision trees", "KNN"], answer: 1
+      },
+      {
+        q: "18. Lớp Dropout thường được sử dụng nhằm:",
+        options: ["Tăng learning rate", "Giảm thiểu overfitting", "Tăng số lượng neuron", "Tăng batch size"], answer: 1
+      },
+      {
+        q: "19. Batch normalization giúp mô hình làm được điều gì?",
+        options: ["Tăng variance", "Ổn định và tăng tốc quá trình training", "Bớt số lượng layers", "Tăng số lượng feature"], answer: 1
+      },
+      {
+        q: "20. Kỹ thuật Early stopping giúp:",
+        options: ["Ngăn ngừa overfitting", "Tăng learning rate", "Tăng số epoch", "Tăng kích thước dataset"], answer: 0
+      },
+      {
+        q: "21. Mạng CNNs chủ yếu dùng để xử lý loại dữ liệu nào:",
+        options: ["Văn bản (Text)", "Hình ảnh (Images)", "Chuỗi thời gian (Time series)", "Đồ thị (Graphs)"], answer: 1
+      },
+      {
+        q: "22. Lớp Pooling trong mạng CNN có vai trò:",
+        options: ["Tăng độ phân giải ảnh", "Giảm kích thước của feature map", "Tăng số lượng filters", "Tăng cường gradient"], answer: 1
+      },
+      {
+        q: "23. Cấu trúc Transformers phụ thuộc phần lớn vào cơ chế:",
+        options: ["Convolution", "Attention (Sự chú ý)", "Pooling", "Sampling"], answer: 1
+      },
+      {
+        q: "24. Positional encoding được sử dụng để làm gì trong Transformer?",
+        options: ["Tăng kích thước token", "Mã hóa vị trí các token theo tuần tự", "Giảm tác động của attention", "Tăng kích thước batch size"], answer: 1
+      },
+      {
+        q: "25. LSTM giúp xử lý nhược điểm nào trong mạng RNN cổ điển?",
+        options: ["Exploding gradient", "Vanishing gradient", "Imbalance data", "Overfitting"], answer: 1
+      },
+      {
+        q: "26. Kỹ thuật Gradient clipping có tác dụng ngăn chặn hiện tượng:",
+        options: ["Learning rate quá thấp", "Exploding gradient (bùng nổ đạo hàm)", "Overfitting", "Accuracy thấp"], answer: 1
+      },
+      {
+        q: "27. Thuật toán Adam khác với SGD truyền thống ở các điểm:",
+        options: ["Không sử dụng gradient", "Sử dụng Adaptive learning rate (Tốc độ học thích ứng)", "Không dùng loss function", "Không dùng mini-batch"], answer: 1
+      },
+      {
+        q: "28. Xavier initialization (khởi tạo Xavier) dùng để:",
+        options: ["Tăng phương sai của gradient lên", "Giữ phương sai hàm kích hoạt (activation variance) ổn định", "Tăng số lượng neurons", "Tăng speed của learning rate"], answer: 1
+      },
+      {
+        q: "29. He initialization thường làm việc hiệu quả nhất với loại hàm kích hoạt nào?",
+        options: ["Sigmoid", "Tanh", "ReLU", "Softmax"], answer: 2
+      },
+      {
+        q: "30. Kỹ thuật Learning rate scheduling có nghĩa là gì?",
+        options: ["Thay đổi learning rate linh hoạt trong quá trình training", "Tích cực tăng batch size", "Giảm bớt layers không cần thiết", "Thêm dữ liệu cho dataset"], answer: 0
+      },
+      {
+        q: "31. Đại lượng Momentum trong SGD có tác dụng:",
+        options: ["Giảm gradient noise (nhiễu), điều hướng tối ưu", "Khám phá thêm features", "Tăng loss qua chu kỳ", "Giảm kích thước batch"], answer: 0
+      },
+      {
+        q: "32. Small batch size thông thường sẽ khiến cho bước cập nhật gradient có đặc điểm:",
+        options: ["Gradient ổn định tuyệt đối", "Tạo ra noisy gradient (gradient nhiễu)", "Không thay đổi gì", "Accuracy sẽ thấp đi"], answer: 1
+      },
+      {
+        q: "33. Weight decay bản chất là một dạng của kỹ thuật:",
+        options: ["Regularization (Điều chuẩn)", "Scaling (Thu phóng data)", "Data Augmentation", "Sampling (Lấy mẫu)"], answer: 0
+      },
+      {
+        q: "34. Thuật toán Gradient descent tìm kiếm điểm nào hội tụ:",
+        options: ["Local maximum (cực đại cục bộ) của gradient", "Local minimum (cực tiểu cục bộ) của hàm loss", "Best feature", "Best batch"], answer: 1
+      },
+      {
+        q: "35. Optimizer được sử dụng rộng rãi và phổ cập nhất hiện nay là:",
+        options: ["SGD", "Adam", "KNN", "PCA"], answer: 1
+      },
+      {
+        q: "36. Trong bài toán phân loại, công thức tính Precision là:",
+        options: ["TP/(TP+FN)", "TP/(TP+FP)", "TN/(TN+FP)", "TP/Total"], answer: 1
+      },
+      {
+        q: "37. Trong bài toán phân loại, công thức tính Recall là:",
+        options: ["TP/(TP+FN)", "TP/(TP+FP)", "TN/(TN+FP)", "FN/(FN+TP)"], answer: 0
+      },
+      {
+        q: "38. Metric F1 score được định nghĩa là:",
+        options: ["Trung bình cộng (Arithmetic mean) của loss", "Trung bình điều hòa (Harmonic mean) của precision & recall", "Chỉ số trung bình của Accuracy", "Giá trị Loss trung bình của mô hình"], answer: 1
+      },
+      {
+        q: "39. ROC curve (Đường cong ROC) vẽ biểu đồ tương quan giữa biểu đồ:",
+        options: ["Precision vs Recall", "TPR (True Positive Rate) vs FPR (False Positive Rate)", "Loss tổng vs Epoch", "Accuracy tổng kết so với Epoch"], answer: 1
+      },
+      {
+        q: "40. AUC mang ý nghĩa trực quan là gì?",
+        options: ["Mức độ của Accuracy", "Diện tích dưới đường cong ROC (Area under ROC curve)", "Hàm mục tiêu phụ", "Learning rate tổng"], answer: 1
+      },
+      {
+        q: "41. Chỉ số IoU được dùng để đo lường:",
+        options: ["Classification accuracy", "Phần diện tích giao nhau (Overlap) của 2 bounding boxes", "Tổng số lượng vật thể", "Kích thước ảnh"], answer: 1
+      },
+      {
+        q: "42. Thuật ngữ mAP trong các bài toán Object Detection viết tắt của:",
+        options: ["Mean Accuracy Precision", "Mean Average Precision", "Maximum Average Precision", "Model Average Precision"], answer: 1
+      },
+      {
+        q: "43. Average Precision (AP) được tính từ đâu?",
+        options: ["Đường cong Precision-recall (P-R curve)", "Đường Loss curve", "Đường cong ROC", "Đường Accuracy curve"], answer: 0
+      },
+      {
+        q: "44. Metric tính toán phổ biến nhất dành cho bài toán Segmentation:",
+        options: ["IoU", "RMSE", "MAE", "Accuracy"], answer: 0
+      },
+      {
+        q: "45. Ma trận nhầm lẫn (Confusion matrix) bao gồm các thông số cơ bản:",
+        options: ["TP, TN, FP, FN", "Precision, Recall", "Loss, Accuracy", "Mean, Variance"], answer: 0
+      },
+      {
+        q: "46. Kỹ thuật One-hot encoding dùng để mã hóa cho loại data số gì?",
+        options: ["Dữ liệu số liên tục (Numerical data)", "Dữ liệu dạng phân loại hạng mục (Categorical data)", "Hình ảnh (Pixel Array)", "Dung lượng bộ nhúng (Embeddings)"], answer: 1
+      },
+      {
+        q: "47. Kỹ thuật Normalization thường sẽ ràng buộc hay thu phóng các chỉ số về vùng miền nào?",
+        options: ["[-10, 10]", "[0, 1]", "[1, 100]", "[-100, 100]"], answer: 1
+      },
+      {
+        q: "48. Quá trình Standardization dẫn đến việc phân phối sẽ có dạng chuẩn gì?",
+        options: ["mean=0, std=1", "mean=1", "std=0", "variance bằng 1 duy nhất"], answer: 0
+      },
+      {
+        q: "49. Các missing values có thể được xử lý trực tiếp thay thế bằng cách:",
+        options: ["Điền giá trị trung bình (Fill mean)", "Bỏ data lỗi (Drop rows)", "Nội suy theo các hàm (Interpolation)", "Tất cả các phương pháp trên"], answer: 3
+      },
+      {
+        q: "50. Phương pháp Data augmentation thường dùng phổ biến trong bài toán nào:",
+        options: ["NLP (Ngôn ngữ tự nhiên)", "Computer Vision (Thị giác máy tính)", "Quản trị Databases", "Reinforcement Learning (Học tăng cường)"], answer: 1
+      }
+      ,
+      { "q": "51. Transfer Learning (Học chuyển giao) là phương pháp:", "options": ["Huấn luyện mô hình từ đầu với dữ liệu mới", "Sử dụng tri thức từ mô hình đã được huấn luyện trước (pre-trained model) để giải quyết bài toán mới", "Chuyển dữ liệu từ máy chủ này sang máy chủ khác", "Chuyển đổi các bài toán hồi quy thành phân loại"], "answer": 1 },
+      { "q": "52. Trong mạng nơ-ron tích chập (CNN), Skip Connection (kết nối tắt) là cốt lõi của kiến trúc nào?", "options": ["VGGNet", "AlexNet", "ResNet (Residual Networks)", "LeNet"], "answer": 2 },
+      { "q": "53. Autoencoder (Bộ tự mã hóa) là mạng nơ-ron chủ yếu được sử dụng để:", "options": ["Phân loại văn bản", "Giảm chiều dữ liệu (Dimensionality Reduction) và nén đặc trưng", "Tạo ra văn bản (Text Generation)", "Học tăng cường (Reinforcement Learning)"], "answer": 1 },
+      { "q": "54. Generative Adversarial Networks (GANs) bao gồm hai thành phần chính là:", "options": ["Encoder và Decoder", "Actor và Critic", "Generator (Bộ tạo) và Discriminator (Bộ phân biệt)", "Convolution và Pooling"], "answer": 2 },
+      { "q": "55. Mô hình Word2Vec chuyển đổi các từ thành:", "options": ["Đường dẫn thư mục", "Các ma trận hình ảnh", "Các vector số thực dày đặc (Dense vectors/Embeddings)", "Nhãn phân loại"], "answer": 2 },
+      { "q": "56. K-Fold Cross Validation với K=5 có nghĩa là:", "options": ["Dữ liệu được chia thành 5 folds, huấn luyện 5 lần, mỗi lần dùng 1 fold để test và 4 folds để train", "Sử dụng 5 mô hình khác nhau để ensemble", "Nhân bản dữ liệu lên 5 lần", "Huấn luyện trong 5 epochs"], "answer": 0 },
+      { "q": "57. Metric R-Squared (R2 score) trong hồi quy (Regression) cho biết điều gì?", "options": ["Tỷ lệ dự đoán đúng", "Tỷ lệ phần trăm phương sai của biến phụ thuộc được giải thích bởi mô hình", "Tổng sai số tuyệt đối", "Độ phức tạp của mô hình"], "answer": 1 },
+      { "q": "58. Data Leakage (Rò rỉ dữ liệu) thường xảy ra khi:", "options": ["Dữ liệu bị hacker đánh cắp", "Kích thước tập test quá nhỏ", "Tập huấn luyện (train set) chứa thông tin của tập kiểm tra (test set) hoặc nhãn tương lai", "Quá trình tiền xử lý mất quá nhiều thời gian"], "answer": 2 },
+      { "q": "59. Principal Component Analysis (PCA) thường được sử dụng để:", "options": ["Phân loại đa lớp", "Phát hiện đối tượng (Object Detection)", "Trích xuất đặc trưng và giảm chiều chiều dữ liệu (Dimensionality Reduction)", "Tạo dữ liệu mới"], "answer": 2 },
+      { "q": "60. Thuật toán t-SNE chủ yếu được ứng dụng để làm gì?", "options": ["Trực quan hóa dữ liệu có số chiều cao trên không gian 2D/3D", "Phân loại chuỗi thời gian", "Huấn luyện mạng nơ-ron", "Chuẩn độ (Calibration) nhãn"], "answer": 0 },
+      { "q": "61. Sự khác biệt chính giữa Bagging và Boosting (Ensemble Learning) là:", "options": ["Bagging sử dụng Neural Networks, Boosting sử dụng Trees", "Bagging huấn luyện các mô hình song song và độc lập, Boosting huấn luyện tuần tự (mô hình sau sửa lỗi mô hình trước)", "Bagging giảm Bias, Boosting giảm Variance", "Không có sư khác biệt"], "answer": 1 },
+      { "q": "62. Trong Random Forest, mỗi Decision Tree được xây dựng dựa trên:", "options": ["Toàn bộ dữ liệu và toàn bộ đặc trưng", "Một mẫu dữ liệu lặp lại (Bootstrap sample) và một tập con ngẫu nhiên của các đặc trưng", "Chỉ các đặc trưng bị nhiễu", "Các vector hỗ trợ (Support Vectors)"], "answer": 1 },
+      { "q": "63. XGBoost là một dạng cải tiến của họ thuật toán:", "options": ["Support Vector Machines", "Gradient Boosting Trees", "K-Means", "Deep Learning"], "answer": 1 },
+      { "q": "64. Grid Search dùng để làm gì trong Machine Learning?", "options": ["Tìm kiếm điểm cực tiểu của Gradient Descent", "Lấy điểm tối ưu của mạng CNN", "Tìm kiếm và tinh chỉnh siêu tham số (Hyperparameter tuning)", "Lọc bỏ dữ liệu trống"], "answer": 2 },
+      { "q": "65. Khác biệt cốt lõi giữa L1 Regularization (Lasso) và L2 Regularization (Ridge) là:", "options": ["L2 có thể loại bỏ hoàn toàn các đặc trưng (cho trọng số = 0), L1 thì không", "L1 có thể loại bỏ hoàn toàn các đặc trưng (cho trọng số = 0), L2 thì không", "L1 dùng cho phân tích ảnh, L2 dùng cho văn bản", "L1 tăng Overfitting, L2 giảm Overfitting"], "answer": 1 },
+      { "q": "66. Tại sao việc khởi tạo toàn bộ trọng số bằng 0 (Zero initialization) trong mạng nơ-ron là sai lầm?", "options": ["Khiến hàm mất mát bằng 0", "Dẫn đến hiện tượng các nơ-ron cập nhật giống hệt nhau (Symmetry Breaking problem)", "Gây ra Exploding gradient", "Sai cấu trúc kích cỡ ma trận"], "answer": 1 },
+      { "q": "67. Learning Rate Warmup là kỹ thuật gì?", "options": ["Dùng learning rate lớn ngay từ đầu", "Khởi động với learning rate nhỏ dần tăng lên trong một số epoch đầu (warmup steps), sau đó mới giảm dần", "Sưởi ấm GPU trước khi train", "Đóng băng các lớp đầu tiên"], "answer": 1 },
+      { "q": "68. Mô hình Gated Recurrent Unit (GRU) tối ưu hơn LSTM ở điểm nào?", "options": ["Không có bộ nhớ", "Tính toán đơn giản và nhanh hơn do có ít cổng (gates) hơn", "Chỉ xử lý được ảnh", "Giải quyết hoàn toàn Overfitting"], "answer": 1 },
+      { "q": "69. Kiến trúc Encoder-Decoder thường được sử dụng nhiều nhất cho tác vụ nào?", "options": ["Dự báo chuỗi thời gian (Time-series forecasting)", "Phân loại ảnh (Image classification)", "Dịch máy (Machine Translation) và sinh văn bản sequence-to-sequence", "Phân cụm văn bản"], "answer": 2 },
+      { "q": "70. Chỉ số BLEU (Bilingual Evaluation Understudy) dùng để đánh giá trong bài toán nào?", "options": ["Nhận diện thực thể (NER)", "Object Detection", "Sinh hình ảnh", "Dịch máy tự động (Machine Translation)"], "answer": 3 },
+      { "q": "71. Beam Search trong xử lý sinh văn bản (Text Generation) giúp:", "options": ["Loại bỏ từ khóa thừa", "Chặn các từ tục tĩu", "Khám phá đồng thời top-k chuỗi tiềm năng nhất để cải thiện chất lượng câu sinh ra so với Greedy Search", "Giảm thiểu thời gian dự đoán"], "answer": 2 },
+      { "q": "72. Mô hình BERT (Bidirectional Encoder Representations from Transformers) được thiết kế đặc trưng từ:", "options": ["Cơ chế Decoder của Transformer", "Mạng CNN", "Cơ chế Encoder 2 chiều của Transformer", "Mạng RNN nhiều tầng"], "answer": 2 },
+      { "q": "73. BPE (Byte Pair Encoding) và WordPiece là công cụ phục vụ mục đích gì trong NLP?", "options": ["Dịch nghĩa từ", "Tạo ra âm thanh Text-To-Speech", "Chia tách văn bản thành các từ thứ cấp (Subword Tokenization)", "Chuẩn hóa bảng mã Latin"], "answer": 2 },
+      { "q": "74. Trong cơ chế Self-Attention của Transformer, từ nào sẽ tính điểm chú ý với từ nào?", "options": ["Tất cả các từ với nhau trong giới hạn ngữ cảnh", "Chỉ từ trước đó", "Chỉ từ liền sau", "Chỉ tính với từ khóa chính"], "answer": 0 },
+      { "q": "75. Khái niệm Masked Language Modeling (MLM) nổi tiếng xuất phát từ bài báo của:", "options": ["GPT-2", "YOLO", "BERT", "Word2Vec"], "answer": 2 },
+      { "q": "76. Kỹ thuật Zero-shot Learning trong LLM hiện đại có nghĩa là:", "options": ["Mô hình không cần học và train gì cả", "Yêu cầu mô hình dự đoán mà không cung cấp nhãn ví dụ nào trong câu lệnh (prompt)", "Bỏ trống nhãn (NaN)", "Số bước huấn luyện là 0"], "answer": 1 },
+      { "q": "77. Kernel trick (Thủ thuật Kernel) trong SVM dùng để làm gì?", "options": ["Giảm Batch size", "Biến đổi không gian dữ liệu gốc lên không gian nhiều chiều hơn nhằm tìm mặt phẳng phân chia dữ liệu phi tuyến", "Kết hợp các mạng song song", "Tăng tính đa dạng dữ liệu"], "answer": 1 },
+      { "q": "78. Kỹ thuật Elbow method thường được sử dụng nhằm mục đích:", "options": ["Đo lực kéo (Gradient)", "Tối giản chiều không gian đồ thị", "Chọn hệ số siêu tham số 'k' (số cụm tối ưu) cho dữ liệu trong thuật toán K-Means", "Vẽ biểu đồ Confusion matrix"], "answer": 2 },
+      { "q": "79. Thuật toán phân cụm DBSCAN có ưu điểm lớn nhất là gì so với K-Means?", "options": ["Sắp xếp điểm vào mô hình cây nhị phân", "Tính tốc độ cực nhanh", "Không cần xác định trực tiếp số cụm 'k', và có khả năng phát hiện dữ liệu ngoại lai (noise)", "Sử dụng với Deep Learning"], "answer": 2 },
+      { "q": "80. 'Curse of Dimensionality' (Lời nguyền số chiều) ám chỉ vấn đề:", "options": ["Độ chính xác mô hình bắt buộc phải đạt 100%", "Lỗi thiết kế phần cứng", "Số lượng feature (đặc trưng/chiều) quá lớn khiến dữ liệu trở nên cực kỳ rời rạc, làm giảm hiệu năng mô hình", "Mất mát của dữ liệu Text"], "answer": 2 },
+      { "q": "81. Singular Value Decomposition (SVD) là thuật toán toán học làm nền tảng cho hệ thống nào?", "options": ["Dịch máy", "Hệ thống gợi ý (Recommender Systems / Lọc cộng tác)", "Tối ưu hóa tài nguyên phần cứng", "Phát hiện giọng nói"], "answer": 1 },
+      { "q": "82. Trong Học tăng cường (Reinforcement Learning), Markov Decision Process (MDP) bao gồm:", "options": ["Generator, Discriminator, Code", "Weights, Biases, Activation", "Trạng thái (State), Hành động (Action), Phần thưởng (Reward), Nhảy vọt (Transition probability)", "Dataset, Model, Metric"], "answer": 2 },
+      { "q": "83. Q-Learning là một giải thuật thuộc nhóm:", "options": ["Học không giám sát", "Học tăng cường Dựa trên Chính sách (Policy Gradient)", "Học tăng cường Dựa trên Giá trị (Value-based Reinforcement Learning)", "Hồi quy đa biến"], "answer": 2 },
+      { "q": "84. Trạng thái 'Exploration vs Exploitation' trong RL là tiến trình chọn lựa giữa:", "options": ["Khám phá giải pháp mới ngẫu nhiên (Exploration) và Bám sát thu lợi ích trên giải pháp đã biết tốt nhất (Exploitation)", "Thu thập Data và Tạo model", "Xử lý song song hay ngắt quãng", "Train và Test"], "answer": 0 },
+      { "q": "85. Bài toán Phân tích cảm xúc (Sentiment Analysis / Anomaly Detection) với mục đích lọc bình luận tiêu cực thường dùng?", "options": ["Hồi quy vô hướng", "Text classification (Phân loại văn bản)", "Computer Vision", "Object Tracking"], "answer": 1 },
+      { "q": "86. Content-based Filtering (Lọc dựa trên nội dung) trong Recommender Systems tư vấn dựa vào:", "options": ["Sở thích chung của bạn bè User", "Đặc tính chi tiết của Item đó phải khớp với hồ sơ, sở thích tương đồng của người dùng đã xem", "Gợi ý ngẫu nhiên", "Khoảng cách xa gần Item đó"], "answer": 1 },
+      { "q": "87. Thuật ngữ 'Cold Start Problem' xảy ra khi nào trong AI Recommender?", "options": ["Máy chủ lúc mới khởi động hoặc GPU bị lạnh nguội", "Khi người dùng mới toanh tham gia hoặc vật phẩm mới đăng chưa có lịch sử đánh giá hoặc lịch sử giao dịch", "Không có model dự đoán", "Gradient bằng 0"], "answer": 1 },
+      { "q": "88. Thuật toán SMOTE (Synthetic Minority Over-sampling Technique) dùng xử lý vấn đề:", "options": ["Mất cân bằng dữ liệu (Imbalanced dataset)", "Thiếu nhãn Data", "Quá nhiều Label nhiễu", "Tối ưu RAM máy chủ"], "answer": 0 },
+      { "q": "89. Phương pháp nào thông dụng để xử lý dữ liệu ngoại lai (Outliers)?", "options": ["Sửa thành chuỗi rỗng", "Vứt bỏ toàn bộ Data", "Sử dụng Z-score / IQR (Interquartile Range) để cắt tỉa (Clip) hoặc Loại bỏ", "Mã hóa One-hot encoding"], "answer": 2 },
+      { "q": "90. Concept Drift trong quá trình Triển khai thực tế model (MLOps) đề cập đến việc:", "options": ["Lượng User sử dụng tăng cao", "Phân phối của dữ liệu thay đổi và bản chất bài toán khác xưa do thời gian, khiến mô hình cũ bị sai lệch (degradation)", "Máy chủ bị lỗi ổ cứng", "Chuyển giao Database"], "answer": 1 },
+      { "q": "91. ONNX (Open Neural Network Exchange) và TensorRT hỗ trợ mảng quy trình nào?", "options": ["Train dataset", "Tạo file Markdown", "Deploy và suy luận (Inference), tối ưu tốc độ phần cứng máy tính", "Xây dựng website API"], "answer": 2 },
+      { "q": "92. Trong nén mô hình, kỹ thuật Lượng tử hóa (Quantization) là quá trình:", "options": ["Chuyển đổi số thực thập phân FP32 tỷ lệ cao xuống biểu diễn số nguyên mức thấp như INT8, làm giảm độ bao phủ bộ nhớ", "Nhóm các đặc trưng giống nhau", "Dùng hàm Lượng tử trong vất lý lượng tử", "Gợi nhớ quá khứ"], "answer": 0 },
+      { "q": "93. Đồng thời với Quantization, kỹ thuật Pruning (Cắt tỉa) mô hình deep learning hoạt động dựa vào việc:", "options": ["Ép bộ nhớ nơ-ron bé lại", "Xóa bỏ các trọng số/mắt xích có giá trị cực nhỏ bé hoặc ít quan trọng gần như 0 để tạo nên mạng lưới nhẹ và thưa (sparse) hơn", "Tạo thêm trọng số giả", "Ngưng kết nối Server"], "answer": 1 },
+      { "q": "94. Khuyết điểm Dieing ReLU (Chết ReLU) trong Deep Learning có nghĩa là nơ ron:", "options": ["Tiêu thụ quá nhiều điên áp", "Không thể cập nhật thêm và luôn trả về giá trị 0 vì đầu vào rơi vào vùng âm dốc số 0 vô căn cứ", "Cập nhật sai nhãn", "Làm mất dữ liệu"], "answer": 1 },
+      { "q": "95. Hàm kích hoạt GELU (Gaussian Error Linear Unit) nổi tiếng vì được tích hợp chủ yếu trong mô hình nào?", "options": ["ResNet", "DBSCAN", "Các kiến trúc Transformer lớn mảng LLM như BERT / GPT", "SVM"], "answer": 2 },
+      { "q": "96. Trong Federated Learning (Học liên kết mạng lưới), ưu thế bảo mật chính là:", "options": ["Mọi dữ liệu từ điện thoại phải mã hóa upload lên Server", "Dữ liệu người dùng nằm nguyên ở thiết bị (Local Device), chỉ có các khối trọng số cập nhật (Model Weights Updates) được truyền gửi trao đổi với nhà phát triển", "Bắt buộc cắm trực tiếp USB vào AI", "Sử dụng chuỗi Blockchain Token"], "answer": 1 },
+      { "q": "97. Contrastive Learning (Học đối chiếu) dùng trong bài toán Representation Learning là việc:", "options": ["Thu gọn ảnh xuống nhỏ tí", "Kéo gần khoảng cách ngữ nghĩa giữa các mẫu giống nhau và đẩy dãn tối đa khoảng cách giữa các mẫu không liên quan", "Gắn Tag label thủ công", "So sánh độ phân giải ảnh"], "answer": 1 },
+      { "q": "98. Sự thoả hiệp Bias-Variance (Bias-Variance Tradeoff) mang ý nghĩa rằng:", "options": ["Bias càng cao thì Variance càng cao", "Bias và Variance là một", "Không thể giảm tối đa cả Bias và Variance cùng một lúc. Giảm cái này thường làm tăng cái kia", "Luôn chọn Variance bằng 0"], "answer": 2 },
+      { "q": "99. Phương pháp Self-Supervised Learning (Học Tự Giám Sát) nổi bật bởi đặc trưng:", "options": ["Che giấu kỹ sư phát triển phần mềm", "Mô hình sinh ra nhãn tạm thời (pseudo labels) từ chính dữ liệu gốc mà không dòi hỏi sự can thiệp và gán nhãn thủ công của con người", "Cho phép mô hình không cần hàm Loss", "Sử dụng dữ liệu không có quy luật nhảm nhí"], "answer": 1 },
+      { "q": "100. Thuật toán Attention Mechanisms (Cơ chế chú ý) không xuất phát từ máy tính, nhưng nó mô phỏng trực tiếp triết học nào của con người?", "options": ["Khả năng ăn uống chuyển hoá năng lượng", "Tạo ảnh ở trí nhớ Võng Mạc", "Khi đọc hiểu một lượng lớn dữ liệu, não bộ người chỉ 'Ghim/Tập trung' tới những từ khóa hay chi tiết then chốt nhất thay vì hiểu phân tán ngang hàng", "Chữa lành cảm xúc tinh thần"], "answer": 2 }
+      ,
+      { "q": "101. Cho một nơ-ron có hàm kích hoạt ReLU, đầu vào vector x = [2, -1, 3] và trọng số w = [0.5, 2.0, -1.0], độ lệch (bias) b = -1. Đầu ra của nơ-ron này là bao nhiêu?", "options": ["-5.0", "0", "0.5", "-3.0"], "answer": 1 },
+      { "q": "102. Trong một bài toán phân loại nhị phân, số mẫu Positives (P) = 100, Negatives (N) = 100. Mô hình dự đoán đúng True Positives (TP) = 80, lỗi False Positives (FP) = 10. Giá trị Accuracy và Precision tương ứng là:", "options": ["Accuracy=0.8, Precision=0.8", "Accuracy=0.85, Precision=0.88", "Accuracy=0.85, Precision=0.8", "Accuracy=0.9, Precision=0.88"], "answer": 1 },
+      { "q": "103. Khi sử dụng hàm kích hoạt Softmax cho một vector trị số [1.0, 2.0, 0.0], phần tử lớn nhất sẽ có xác suất xấp xỉ bao nhiêu? (Cho e ≈ 2.7)", "options": ["Khoảng 50%", "Khoảng 66% (hay 70%)", "Khoảng 90%", "Tất cả bằng nhau"], "answer": 1 },
+      { "q": "104. Cho feature map kích thước (W x H) = 28x28. Sử dụng tích chập Conv2D với kích thước bộ lọc (filter F) = 3x3, bước nhảy (stride S) = 1, Padding = 0 (valid padding). Kích thước mặt nạ đầu ra sẽ là:", "options": ["28x28", "26x26", "27x27", "14x14"], "answer": 1 },
+      { "q": "105. Hàm mất mát Cross-Entropy nhị phân: L = -[y*log(p) + (1-y)*log(1-p)]. Nếu nhãn thực tế y = 1 và mô hình dự đoán xác suất p = 1.0 (sự tự tin tuyệt đối). Giá trị của hàm mất mát L sẽ tiến tới?", "options": ["Vô cực", "0.5", "1", "0"], "answer": 3 },
+      { "q": "106. Một mô hình y tế có độ nhạy (Recall/TPR) là 0.8 và độ đặc hiệu (Specificity/TNR) là 0.9. False Positive Rate (FPR - tỷ lệ dương tính giả) của mô hình là bao nhiêu?", "options": ["0.1", "0.2", "0.8", "0.9"], "answer": 0 },
+      { "q": "107. Trong mạng CNN, thực hiện lớp Max Pooling kích thước pool_size=2x2 và stride=2 vào đặc trưng 32x32. Kích thước ảnh đầu ra sẽ là:", "options": ["32x32", "30x30", "16x16", "64x64"], "answer": 2 },
+      { "q": "108. Chuẩn hóa Batch Normalization áp dụng biến đổi: x_norm = (x - mean) / sqrt(variance + epsilon). Lấy ví dụ minibatch gồm 4 phần tử: x = [2, 4, 4, 6], giá trị trung bình (mean) và phương sai population (variance) là:", "options": ["mean = 4, variance = 2", "mean = 4, variance = 2.5", "mean = 3, variance = 1", "mean = 5, variance = 2"], "answer": 0 },
+      { "q": "109. Trong không gian vector nhiều chiều, khoảng cách hình học Euclid giữa 2 điểm A(1, 1, 0) và B(1, -2, 4) là:", "options": ["4", "5", "6", "25"], "answer": 1 },
+      { "q": "110. Với thuật toán PCA, ma trận hiệp phương sai của dữ liệu trả về 3 eigenvalues (giá trị riêng) là: λ1=10.0, λ2=2.0, λ3=0.5. Tỷ lệ phương sai được giải thích (Explained Variance Ratio) nếu chỉ giữ lại thành phần chính PC1 là bao nhiêu?", "options": ["10%", "50%", "80%", "90%"], "answer": 2 },
+      { "q": "111. Chỉ số F1-score của một mô hình khi có Precision = 0.8 và Recall = 0.8 là bao nhiêu?", "options": ["0.64", "0.8", "1.0", "1.6"], "answer": 1 },
+      { "q": "112. Hàm kích hoạt Sigmoid có công thức: s(z) = 1 / (1 + e^-z). Nếu tham số đầu vào z = 0, thì giá trị đầu ra của Sigmoid bằng bao nhiêu?", "options": ["0", "0.5", "1", "-1"], "answer": 1 },
+      { "q": "113. Hàm Loss function (MSE): L = (y_pred - y)^2. Nếu mô hình dự đoán ra y_pred = 3, nhưng nhãn thực tế y = 1. Bạn hãy tính cực trị đạo hàm dL/dy_pred (Gradients) tại điểm này?", "options": ["2", "4", "6", "8"], "answer": 1 },
+      { "q": "114. Khoảng cách L1 (Manhattan Distance) đo lượng sự di chuyển theo lưới. Khoảng cách Manhattan giữa A(1, 2) và B(4, 6) là bao nhiêu?", "options": ["3", "5", "7", "25"], "answer": 2 },
+      { "q": "115. Trong thuật toán TF-IDF của xử lý ngôn ngữ, từ 'deep' xuất hiện 2 lần trong đoạn văn (Term Frequency = 2). Chỉ số ngịch đảo văn bản (IDF) của từ đó là 1.5. Trọng số TF-IDF của từ đó là:", "options": ["0.75", "1.5", "2", "3.0"], "answer": 3 },
+      { "q": "116. Trong phân cụm K-Means, một cụm (cluster) hiện đang chứa 2 điểm dữ liệu (1, 2) và (3, 4). Tọa độ đúng của tâm cụm (centroid) mới là gì?", "options": ["(2, 2)", "(2, 3)", "(3, 2)", "(4, 6)"], "answer": 1 },
+      { "q": "117. Số lượng tham số cần huấn luyện (parameters) trong một Lớp kết nối đầy đủ (Dense / Fully Connected layer) có 10 neurons đầu vào và 5 neurons ở đầu ra là bao nhiêu?", "options": ["15", "50", "55", "100"], "answer": 2 },
+      { "q": "118. Gradient Descent bước cơ bản: w_new = w_old - learning_rate * gradient. Nếu trọng số hiện tại là w_old = 1.0, learning rate (lr) = 0.1 và giá trị gradient tại đó bằng 2.0. Trọng số mới w_new là?", "options": ["0.8", "0.9", "1.0", "1.2"], "answer": 0 },
+      { "q": "119. Đạo hàm của hàm Sigmoid s(z) có một đặc điểm toán học cực kì đẹp: s'(z) = s(z) * (1 - s(z)). Nếu giá trị s(z) tại đó là 0.5 thì độ lớn đạo hàm là bao nhiêu?", "options": ["0", "0.25", "0.5", "1.0"], "answer": 1 },
+      { "q": "120. Định lý Bayes được biểu diễn qua công thức toán học xác suất có điều kiện nào?", "options": ["P(A|B) = P(B|A) * P(B) / P(A)", "P(A|B) = P(A) + P(B|A)", "P(A|B) = P(B|A) * P(A) / P(B)", "P(A|B) = P(B|A) - P(A) * P(B)"], "answer": 2 },
+      { "q": "121. Một bộ lọc (Filter) trong lớp thứ hai của mạng CNN áp dụng lên đầu vào có 3 channels (RGB). Bộ lọc này có kích thước 3x3. Tính toán tổng số lượng tham số (weights + bias) cho riêng BỘ LỌC ĐƠN LẺ này?", "options": ["9", "10", "27", "28"], "answer": 3 },
+      { "q": "122. Tích chập ngược hay tích chập tăng chiều (Transposed Convolution) giúp vẽ lại ảnh to hơn bằng cách nội suy. Với công thức O = (I - 1)*S + F - 2P. Cho I=2, S=2, F=3, P=0. Tính O?", "options": ["3", "4", "5", "6"], "answer": 2 },
+      { "q": "123. Entropy nhị phân (Đo lường sự lộn xộn, độ bất định của thông tin dữ liệu). Công thức: H = - (p * log2(p) + q * log2(q)). Entropy của việc tung một đồng xu tuyệt đối công bằng là bao nhiêu?", "options": ["0", "0.5", "1.0", "Vô cực"], "answer": 2 },
+      { "q": "124. Từ một Ma trận nhầm lẫn (Confusion Matrix): Có 40 True Positive (Dương tính thật), 50 True Negative (Âm tính thật), 5 False Positive (Dương tính giả) và 5 False Negative (Âm tính giả). Độ chính xác (Accuracy) của hệ thống là bao nhiêu?", "options": ["80%", "85%", "90%", "95%"], "answer": 2 },
+      { "q": "125. Hình phạt L1 (L1 Regularization Lasso Penalty) = lambda * Tổng(Khối lượng Trị tuyệt đối các Trọng số). Hãy tính giá trị phạt răn đe nếu list Trọng số là [-0.5, 1.0, 2.0] và lambda là 0.1?", "options": ["0.25", "0.35", "0.8", "3.5"], "answer": 1 },
+      { "q": "126. Hình phạt L2 (L2 Regularization Ridge Penalty) = lambda * Tổng(Khối lượng Bình phương các Trọng số). Tính hình phạt của một nơ ron chứa duy nhất list Trọng số [1.0, 2.0] và hệ số lambda = 0.1?", "options": ["0.3", "0.4", "0.5", "0.9"], "answer": 2 },
+      { "q": "127. Độ vẩn đục Gini (Gini impurity) trong thuật toán Cây quyết định đo lường sự tạp nham của một Node. Gini = 1 - TỔNG(Tỉ_lệ_từng_class ^ 2). Nếu Node này toàn bộ 10 phần tử đều mang duy nhất Nhãn Class 'A' thì Gini bằng bao nhiêu?", "options": ["0", "0.5", "1.0", "-1.0"], "answer": 0 },
+      { "q": "128. Tích vô hướng (Dot Product) của 2 vector đặc trưng A=[1, 2] và B=[-1, 3] trong đại số tuyến tính là:", "options": ["3", "4", "5", "6"], "answer": 2 },
+      { "q": "129. Receptive Field (Trường nhìn / Vùng cảm nhận). Một mạng CNN nhận ảnh gốc. Xuyên qua Lớp Conv số 1 (kích cỡ 3x3, stride=1), lúc này nó có phạm vi hiểu vùng ảnh gốc là 3x3. Đi tiếp Lớp Conv số 2 (kích cỡ 3x3, stride=1). Ở lớp 2 này nơ-ron có thể cảm nhận ngầm bao nhiêu Pixel ban đầu?", "options": ["3x3", "5x5", "6x6", "9x9"], "answer": 1 },
+      { "q": "130. Tiêu chuẩn Khoảng cách Cosine (Cosine Similarity) tính sự giống nhau góc giữa 2 góc chiếu vector từ 0.0->1.0. Cosine của 2 Vector không trùng phập như 2 trục tung và hoành A=[1, 0] và B=[0, 1] là bao nhiêu?", "options": ["-1", "0", "0.5", "1"], "answer": 1 }
+      ,
+      { "q": "101. Cho một nơ-ron có hàm kích hoạt ReLU, đầu vào là vector x = [2, -1, 3] và trọng số w = [0.5, 2.0, -1.0], độ lệch (bias) b = -1. Đầu ra của nơ-ron này là bao nhiêu?", "options": ["-5.0", "0", "0.5", "-3.0"], "answer": 1 },
+      { "q": "102. Trong một bài toán phân loại nhị phân, số mẫu thực tế là Positive (P) = 100, Negative (N) = 100. Mô hình dự đoán TP = 80, FP = 10. Giá trị Accuracy và Precision tương ứng là bao nhiêu?", "options": ["Accuracy=0.8, Precision=0.8", "Accuracy=0.85, Precision=0.88", "Accuracy=0.85, Precision=0.8", "Accuracy=0.9, Precision=0.88"], "answer": 1 },
+      { "q": "103. Khi sử dụng hàm kích hoạt Softmax cho một vector đầu ra [1.0, 2.0, 0.0], giá trị Softmax tương ứng (giả sử e ≈ 2.718) có tỷ lệ xấp xỉ nào dưới đây là đúng nhất?", "options": ["Xác suất lớn nhất thuộc về phần tử thứ nhất", "Xác suất lớn nhất thuộc về phần tử thứ hai, chiếm khoảng 70%", "Các xác suất bằng nhau", "Xác suất lớn nhất thuộc về phần tử thứ ba"], "answer": 1 },
+      { "q": "104. Cho ảnh đầu vào kích thước (WxH) = 28x28. Sử dụng Conv2D với kích thước filter F=3, Stride S=1, Padding 'valid' (không đệm, P=0). Kích thước mặt nạ (feature map) đầu ra sẽ là:", "options": ["28x28", "26x26", "27x27", "14x14"], "answer": 1 },
+      { "q": "105. Giả sử ta có hàm mất mát Cross-Entropy nhị phân: L = -[y*log(p) + (1-y)*log(1-p)]. Nếu nhãn thực tế y = 1 và mô hình dự đoán ra xác suất p = 1.0. Giá trị của hàm mất mát L sẽ tiến tới?", "options": ["Vô cực", "0.5", "1", "0"], "answer": 3 },
+      { "q": "106. Một mô hình có độ nhạy (Recall/TPR) là 0.8 và độ đặc hiệu (Specificity/TNR) là 0.9. False Positive Rate (FPR) của mô hình là bao nhiêu?", "options": ["0.1", "0.2", "0.8", "0.9"], "answer": 0 },
+      { "q": "107. Trong mạng CNN, lớp Max Pooling có kích thước pool_size=2x2 và stride=2 được áp dụng vào feature map kích thước 32x32. Kích thước đầu ra sẽ là:", "options": ["32x32", "30x30", "16x16", "64x64"], "answer": 2 },
+      { "q": "108. Chuẩn hóa Batch Normalization áp dụng phép biến đổi: x_norm = (x - mean) / sqrt(variance + epsilon). Nếu lấy một batch gồm 4 giá trị x_i: [2, 4, 4, 6], thì giá trị mean và variance (không hiệu chỉnh mẫu) là bao nhiêu?", "options": ["mean = 4, variance = 2", "mean = 4, variance = 2.5", "mean = 3, variance = 1", "mean = 5, variance = 3"], "answer": 0 },
+      { "q": "109. Trong học máy nhiều chiều, khoảng cách Euclid giữa 2 vector A(1, 1, 0) và B(1, -2, 4) là:", "options": ["4", "5", "6", "25"], "answer": 1 },
+      { "q": "110. Với thuật toán PCA (Phân tích thành phần chính), ma trận hiệp phương sai (Covariance Matrix) của dữ liệu tập trung tính được các giá trị riêng (Eigenvalues) là: λ1=10.0, λ2=2.0, λ3=0.5. Tỷ lệ phương sai được giải thích (Explained Variance Ratio) nếu chỉ giữ lại thành phần chính PC1 là bao nhiêu?", "options": ["10%", "50%", "80%", "90%"], "answer": 2 }
+      ,
+      { "q": "131. Khái niệm Data Leakage (Rò rỉ dữ liệu) nghiêm trọng nhất khi nào?", "options": ["Máy chủ lưu trữ bị hack lấy mật khẩu", "Nhãn mục tiêu (target) trong tương lai bị bao gồm sai lệch vào các Feature huấn luyện hiện tại", "Kích thước biến test quá lớn so với biến train", "Thất thoát thông tin gradient ra ngoài"], "answer": 1 },
+      { "q": "132. Hàm kích hoạt Tanh (Hyperbolic Tangent) ánh xạ đầu ra vào khoảng nào?", "options": ["[-1, 1]", "[0, 1]", "[0, vô cực]", "[-vô cực, vô cực]"], "answer": 0 },
+      { "q": "133. Sự khác biệt chuẩn mựct nhất giữa thuật ngữ Epoch và Batch?", "options": ["Batch là dữ liệu chữ, Epoch là dữ liệu ảnh", "Epoch = Tốc độ Gradient, Batch = Kích cỡ Gradient", "Epoch là 1 vòng lặp qua TOÀN BỘ dữ liệu huấn luyện, Batch là 1 nhóm nhỏ dữ liệu để cập nhật mạng 1 lần", "Chúng hoàn toàn đồng nghĩa"], "answer": 2 },
+      { "q": "134. Thuật toán Naive Bayes được gọi là 'Naive' (Ngây thơ) vì sao?", "options": ["Thuật toán này ngây thơ đến mức không cần huấn luyện", "Vì nó quá dễ để Code", "Vì hệ thống cho rằng tất cả các Input feature đều hoàn toàn Độc lập thống kê với nhau", "Chỉ vì nhà sáng lập tên là Naive Bayes"], "answer": 2 },
+      { "q": "135. Vấn đề 'Exploding Gradient' (Tràn/Bùng nổ đạo hàm) thường được khắc phục tốt nhất bằng phương pháp nào?", "options": ["Dừng sớm (Early Stopping)", "Nhân Gradient với 0", "Kẹp/Cắt tỉa Gradient (Gradient Clipping)", "Chuyển sang dùng SVM"], "answer": 2 },
+      { "q": "136. Điểm mạng nhất xác định kỷ nguyên của kiến trúc Transformer so với RNN (Mạng hồi quy) là gì?", "options": ["Không cần Gradient Descent", "Sử dụng ảnh thay vì chữ tiếng anh", "Attention tính điểm từ xa và Khả năng xử lý các Text song song đồng loạt thay vì bắt buộc xử lý tuần tự từng từ", "Thời gian huấn luyện bị làm chậm lại"], "answer": 2 },
+      { "q": "137. BLEU và ROUGE là hai thang đo chủ yếu ở mảng nào?", "options": ["Thị giác cực trị", "Dịch máy văn bản (Translation) và Tóm tắt văn bản (Summarization)", "Phân loại giống như Accuracy", "Học Tăng Cường Reward"], "answer": 1 },
+      { "q": "138. Tại sao One-hot encoding lại gây ra vấn đề Curse of Dimensionality nếu từ vựng quá lớn?", "options": ["Biến chữ nghĩa thành các con số quá dài lên đến tỷ phần tử", "Làm ma trận trở nên dày đặc làm khét RAM bộ nhớ", "Sinh ra ma trận quá Thưa thớt (Sparse) 99% toàn số 0, hàng triệu số cho mỗi từ đơn", "Sinh ra 100% tỷ lệ Overfitting tuyệt đối"], "answer": 2 },
+      { "q": "139. Lỗi 'Out Of Vocabulary' (OOV) diễn ra khi nào?", "options": ["Khi người lập trình quên viết Token", "Mạng Neural vượt biên dữ liệu", "Khi model gặp một Từ chưa từng bao giờ có mặt trong tập Vocab ban đầu lúc nó Train", "Khi từ đó quá dài"], "answer": 2 },
+      { "q": "140. Tokenization bằng BPE (Byte Pair Encoding) thường giúp mô hình:", "options": ["Nhấn mạnh cấu trúc dấu câu", "Đổi Byte thành MegaByte", "Giảm kích thước độ dài từ vựng cần học ban đầu và Tự chắp vá các từ 'OOV' lạ bằng các Subword nhỏ lẻ", "Chuyễn đổi trực tiếp qua Image"], "answer": 2 },
+      { "q": "141. Phép chập tích (Convolution) phiên bản 1D thường được áp dụng cho đặc trưng loại dữ liệu nào?", "options": ["3D game object", "Ảnh siêu chất lượng (Images) cao", "Dữ liệu có tính Chuỗi tuần tự Sequence (Time-series / Chữ viết 1 chiều)", "Video"], "answer": 2 },
+      { "q": "142. Mạng GAN (Generative Adversarial Networks) có hai thành phần huấn luyện đối kháng cốt cán tên là gì?", "options": ["Encoder trích xuất và Decoder nhả mã", "Actor và Critic", "Generator (Bộ tạo tiền giả) và Discriminator (Cảnh sát hình sự)", "CNN nhánh trái và phải"], "answer": 2 },
+      { "q": "143. Trong mô hình Object Detection hình ảnh vuông vắn, Bounding Box (Khuôn hình bao vật thể) dự đoán thường được mô tả bằng bao nhiêu giá trị toán học?", "options": ["2 (chiều cao và rộng)", "3 (x, y, z chiều sâu)", "4 (x_center, y_center tọa độ gốc tâm, và width, height)", "1 (chỉ cần màu sắc Pixels)"], "answer": 2 },
+      { "q": "144. Việc Data Augmentation (Tăng cường lật móp ảnh) KHÔNG nên thực hiện phép biến chuyển lật lọng nào với bài toán MNIST nhận diện chữ số cái?", "options": ["Chèn mờ Gaussian Noise", "Cắt mép xíu viền Center crop", "Xoay ảnh ngang 180 độ hoặc Lật dọc ngược hình (Flip)", "Tăng độ chói Brightness"], "answer": 2 },
+      { "q": "145. Cấu trúc mạng đồ sộ ResNet nổi bật vì chiến thắng cuộc thi giải quyết khủng hoảng mạng sâu nhờ sở hữu cơ chế?", "options": ["Hàm Relu âm", "Skip Connection (Kết nối tắt Residual bỏ qua vài layers)", "Cực ít tham số", "Dùng ảnh xám"], "answer": 1 },
+      { "q": "146. Kỹ thuật K-Fold Cross Validation có thêm tùy chọn 'Stratified' được dùng đặc trị để:", "options": ["Chiết khấu bộ nhớ RAM", "Tăng tốc CPU", "Giảm sự méo mó nhãn do chia chéo, đảm bảo tỷ lệ phân phối Label đồng nhất tuyệt đối trong mọi Folds cho dữ liệu Mất Cân Bằng", "Gom nhóm các file trùng tên"], "answer": 2 },
+      { "q": "147. Sự khác nhau giữa Parametric Model và Non-parametric Model?", "options": ["Linear Regresssion là Parametric cố kết độ phức tạp (chỉ có nhiêu đó Trọng lượng weight). KNN là non-parametric tăng phình lên khi data lớn", "Parametric không có Weight nào cả", "Non-parametric chỉ chạy thuật trên CPU", "Tham số hóa toàn bộ Data"], "answer": 0 },
+      { "q": "148. Thuật toán phân cấp Random Forest khác biệt cốt lõi với Decision Tree ở điểm:", "options": ["Không dùng Cây", "Nó là Rừng chứa tổ hợp gộp (Ensemble) hàng trăm Cây rèn Random bằng kỹ thuật phân nhánh Bagging, lấy phiếu bầu cuối", "Nhu cầu dùng Data bé hơn", "Tự tin x10 lần"], "answer": 1 },
+      { "q": "149. Các model trùm tabular Gradient Boosting (XGBoost/LightGBM) kết nối hệ thống cây Tree như thế nào?", "options": ["Tách song song độc lập kiểu Bagging", "Huấn luyện tuần tự đắp chồng, cây con thứ 'n+1' được train trên Sai số dư (Residual Errors) của cây thứ 'n' trước nó", "Hợp nhất mỏ neo cây", "Ghép với SVM"], "answer": 1 },
+      { "q": "150. Hàm mất mát Mean Absolute Error (MAE - L1 Loss) có ưu điểm đặc tả gì thay vì xài MSE (L2 Loss) kinh điển?", "options": ["Đạo hàm của nó luôn luôn bằng 0", "Tăng trọng số", "Cực kỳ chống chịu cứng cỏi với dữ liệu ngoại lai Outliers gây nhiễu", "Tự động phân nhóm đồ thị"], "answer": 2 },
+      { "q": "151. Nếu dữ liệu có tính chu kỳ thời gian liên tục (Time-Series) và cần Validation, ta nên TUYỆT ĐỐI áp dụng phương pháp Validation nào?", "options": ["Trộn Shuffle K-Fold", "Train hết", "Rolling Cross Validation (Time Series Split) luôn tiến bước theo chùm thời gian chứ dứt khoát Không Trộn xáo xảo random", "Drop Out"], "answer": 2 },
+      { "q": "152. AutoEncoder được xào nấu sử dụng nhiều nhất vào trong mảng tiện ích nào?", "options": ["Phân loại âm thanh", "Dịch Video sang giọng nói", "Ép Giảm chiều dữ liệu - Trích xuất đặc trưng ngầm và Mô hình Phát hiện điểm bất thường (Anomaly Detection)", "Lên lịch MLOps Auto"], "answer": 2 },
+      { "q": "153. Word2Vec thuộc loại mô hình học ngôn ngữ NLP nào?", "options": ["Dịch Thuật tự động", "Embeddings. Nó mã hóa 'từ vựng' lơ lửng thành Array các Vector số thực nén đậm mật độ cao.", "Trực quan hóa hình Text", "Khôi phục dữ liệu đã xóa"], "answer": 1 },
+      { "q": "154. Tính chất 'Bi-directional' (Hai chiều) của cấu trúc Cổng Encoder (như BERT) mang lợi ích gì cho Context?", "options": ["Đọc chậm x2 lần để chắc chắn", "Đọc dọc và đọc chéo màn hình", "Nó nắm bắt được Ngữ cảnh bao quát từ các từ ở cả PHÍA TRƯỚC lẫn PHÍA SAU một từ khóa mục tiêu, chứ không mù lòa phiến diện 1 nửa.", "Đếm lại số từ lặp"], "answer": 2 },
+      { "q": "155. Kỹ thuật Fine-Tuning đối với Transfer Learning Mạng Học Chuyển Giao là gì?", "options": ["Format trắng Model", "Điều khiển Server", "Lấy nguyên một Pre-Trained đồ sộ, Đóng băng đa số lớp vỏ dưới và chỉ Train nhẹ lại một vài Layers cuối/ mới với tập dữ liệu đặc chủng hiện tại", "Chỉnh các Label lại thành 1 class duy nhất"], "answer": 2 },
+      { "q": "156. Cơ chế Convolution Layer kếp hợp xen kẽ Pooling Layer trong CNN có tác dụng tạo ra tính chất vĩ đại gì cho mảng Vision?", "options": ["Nguyên bản màu 100%", "Bất biến với Dịch chuyển (Translation Invariance), Dù đối tượng con mèo có lệch chéo góc, model vẫn nhận được nhờ tính chất tóm lược trượt.", "Chống đứng mạng lag", "Tính toán không dùng GPU"], "answer": 1 },
+      { "q": "157. Dropout là mạng tinh giản, thường chỉ được Bật On trong quá trình nào?", "options": ["Predict kết quả thực tế trên API", "Inference Mode suy luận Test", "Quá trình Training cập nhập Loss. MỘt khi model triển khai Testing/Inference, toàn bộ Neural Dropout được sống lại xài 100%.", "Sử dụng với GPU"], "answer": 2 },
+      { "q": "158. Khái niệm nan giải Vấn đề Khởi Đồng Nguội 'Cold Start' thường gặp là thách đố ở lĩnh vực ngóc ngách nào?", "options": ["Computer Vision", "Recommender Systems (Hệ thống Khuyến nghị)", "Word Embedding LLMs", "Hồi quy Logistic đếm k"], "answer": 1 },
+      { "q": "159. Phương pháp PCA gạt loại bỏ các chiều data phụ bằng cách giải hệ phương trình Toán:", "options": ["Gán 0 vào tất cả", "Chọn ra các vector trực giao Principal Component (có đặc trưng thống kê Phương sai/Khoảng phân tán Variance - LỚN NHẤT) để giữ lại", "Lấy điểm Max", "Trộn theo Logarit"], "answer": 1 },
+      { "q": "160. Ý nghĩa sâu xa của cốt lõi Self-Attention là 'Attention' (Tính ma trận xác xuất Điểm Chú ý) giữa:", "options": ["Nhãn dán và Data", "Cột trái sang Cột Database phải", "Tất cả các phần tử nội bộ (Tokens) bên trong CÙNG MỘT Input chuỗi đầu vào (với Tự chính Nó)", "Mô hình và Hàm Loss"], "answer": 2 }
+      ,
+      { "q": "161. NumPy (Numerical Python) là thư viện chủ yếu dùng để làm gì trong Data Science?", "options": ["Vẽ biểu đồ hình tròn", "Xử lý web backend", "Tính toán khoa học, tối ưu tính toán trên mảng và ma trận đồ sộ nhiều chiều", "Quản lý cơ sở dữ liệu SQL"], "answer": 2 },
+      { "q": "162. Đối tượng kiểu cấu trúc dữ liệu nền tảng nhất nằm trong trung tâm thư viện Pandas là gì?", "options": ["Pandas List và Dictionary", "Series (Mảng 1 chiều) và DataFrame (Bảng 2 chiều)", "Tuple và Set", "Graph và Map"], "answer": 1 },
+      { "q": "163. Trong Pandas DataFrame, muốn chọn ra cột có tên 'Age', ta dùng cú pháp nào dưới đây là CHUẨN nhất?", "options": ["df.Age (luôn luôn an toàn)", "df->Age", "df[[Age]]", "df['Age']"], "answer": 3 },
+      { "q": "164. Phương thức df.head() trong Pandas DataFrame dùng để:", "options": ["Hiển thị tiêu đề cột lớn nhất", "In ra toàn bộ dữ liệu", "In ra n-dòng đầu tiên (mặc định n=5)", "Lấy dòng có giá trị Max"], "answer": 2 },
+      { "q": "165. Sự khác biệt cơ bản giữa phương thức iloc[] và loc[] của Pandas DataFrame?", "options": ["Cả hai giống hệt", "iloc[] dựa trên Chỉ mục Tên Nhãn (Label-based), loc[] dựa trên Vị trí Vùng Tọa Độ Index nguyên số (Integer-position based)", "loc[] dựa trên Chỉ mục Tên Nhãn (Label-based), iloc[] dựa trên Vị trí Index nguyên số đếm từ 0 (Integer-position based)", "iloc dùng cho series, loc dùng cho dataframe"], "answer": 2 },
+      { "q": "166. Sự phát sóng (Broadcasting) trong Numpy có nghĩa là gì?", "options": ["Cơ chế in dữ liệu mạng ra màn hình Console", "Khả năng nhân đôi ma trận và truyền tín hiệu Internet", "Cơ chế tự động dãn/ghép chiều (shape) các mảng kích thước khác nhau để thực hiện một cách gọn lẹ các phép toán phần tử +-*/ mà không cần tạo vòng lặp.", "Kiểm tra giá trị Null"], "answer": 2 },
+      { "q": "167. Hàm nào trong Pandas đắc lực nhất khi dùng để nhận định Tổng quan Mô tả Thống kê (Mean, Min, Max, Độ lệch chuẩn Std, Q1) cho tất cả các cột kiểu số trong Bảng?", "options": ["df.info()", "df.describe()", "df.report()", "df.summary()"], "answer": 1 },
+      { "q": "168. Lệnh np.zeros((3, 4)) tạo ra gì?", "options": ["Một mảng 1D có 12 số không", "Ma trận rỗng null", "Một ma trận 2-chiều gồm 3 hàng và 4 cột chứa bộ các giá trị toàn là mặt định số 0.0 float", "Đếm số lượng số 0 bằng vòng lặp"], "answer": 2 },
+      { "q": "169. Nếu x = np.array([1, 2, 3]), giá trị in ra của (x * 2) sẽ là:", "options": ["[1, 2, 3, 1, 2, 3]", "[2, 4, 6]", "Syntax error", "23"], "answer": 1 },
+      { "q": "170. Làm cách nào để đọc file CSV cực kỳ gọn với Pandas?", "options": ["pd.read_csv('file.csv')", "pd.open_csv('file.csv')", "pd.read('file.csv', type='csv')", "df.import('file.csv')"], "answer": 0 },
+      { "q": "171. Numpy Array bắt buộc phải chứa:", "options": ["Chỉ chuỗi string", "Các phần tử đa dạng hỗn tạp Float, Int, String cùng nhau hỗn loạn", "Các phần tử phải Đồng nhất Duy nhất 1 loại kiểu Dữ liệu gốc (Cùng Data Type)", "Ít nhất 2 chiều"], "answer": 2 },
+      { "q": "172. Phương thức df.dropna() dùng để làm gì trong thao tác Tiền xử lý Dữ liệu trên Pandas?", "options": ["Xóa bỏ hoàn toàn DataFrame trong RAM", "Rớt mạng cột A", "Xóa, vứt loại bỏ toàn bộ các Hàng hoặc Cột có chứa giá trị Khuyết Thiếu (NaN/Missing Values)", "Loại bỏ cột nếu nó bị Trùng lặp"], "answer": 2 },
+      { "q": "173. Cách tính Ma trận Chuyển vị (Transpose) của một Numpy Array biến `A` là:", "options": ["A.transpose() hoặc A.T", "np.swap(A)", "A.change_axes()", "A.reverse()"], "answer": 0 },
+      { "q": "174. Phương thức DataFrame.groupby() ứng dụng nhiều nhất khi nào?", "options": ["Khi muốn lưu file Group", "Khi ta cần Chia Nhóm / Gom cụm dữ liệu theo chung một tiêu chí/danh mục cột nào đó, sau đó Thống Kê Toán theo các Nhóm (VD: Tính Lương trung bình theo từng 'Phòng Ban')", "Khi muốn xóa Nhóm người dùng", "Khi dùng vòng lặp For cực nhanh"], "answer": 1 },
+      { "q": "175. Lệnh np.arange(1, 10, 2) trả về mảng con nào?", "options": ["[1, 3, 5, 7, 9]", "[1, 2, 3 ... 10]", "[2, 4, 6, 8, 10]", "[1, 3, 5, 7]"], "answer": 0 },
+      { "q": "176. Để điền thay thế toàn bộ giá trị NaN thành số 0 (hoặc bất kỳ số gì mong muốn) ở Pandas DataFrame, ta xài hàm chuyên dụng gì?", "options": ["df.replace_na(0)", "df.fillna(0)", "df.drop_na(replace=0)", "df.imputer(0)"], "answer": 1 },
+      { "q": "177. Numpy array.shape trả về cái gì?", "options": ["Kết quả của lệnh vẽ đồ thị", "Định dạng byte", "Một tuple (bộ ngoặc) chứa Kích Thước/Khung Chiều không gian của mảng dọc và ngang", "Trả diện tích dữ liệu"], "answer": 2 },
+      { "q": "178. Cú pháp df[df['Age'] > 30] ở Pandas thực thi chức năng gì?", "options": ["Cho lỗi cú pháp", "Đổi các tuổi lớn hơn 30 về giá trị True, False", "Lọc (Filter / Mask) và chỉ trả về bộ những dòng dữ liệu trên DataFrame có nhân khẩu học thỏa mãn độ Tuổi trên 30", "Xóa cột Age"], "answer": 2 },
+      { "q": "179. np.dot(A, B) với A và B là các ma trận hai chiều thực hiện phép toán gì?", "options": ["Nhân hai ma trận Tích vô hướng tuyến tính (Matrix Multiplication / Dot Product) theo quy tắc dòng-nhân-cột", "Sắp xếp lại list", "Nhân trực tiếp tương ứng vị trí (Element-wise multiplication)", "Biến số thành dấu chấm ."], "answer": 0 },
+      { "q": "180. Khác biệt giữa Pandas df.merge() và df.concat() là:", "options": ["Không có chức năng tự phân biệt", "Concat chỉ nhân đôi data, Merge chia đôi dữ liệu", "Merge mang ý nghĩa Phép nối Kết SQL kiểu Joins lồng ghép hai bảng có chung Điểm neo Côn/Cột chung. Concat chỉ mang ý nghĩa Đắp nối Nối dán theo dọc Hàng/Cột (Appending).", "Merge xóa cột, Concat nối nó"], "answer": 2 },
+      { "q": "181. Lệnh np.random.seed(42) có ý nghĩa thiết yếu nào trong khoa học dữ liệu?", "options": ["Tính rễ bậc hai tự động", "Bảo mật tệp chống mã hóa", "Gieo mầm (Seed) để cố định bộ sinh số Sinh ngẫu nhiên giả, đảm bảo kết quả random được tái khả lặp y hệt nhau để phục vụ việc chia sẻ test Code", "Thêm số 42 lần vào dataframe"], "answer": 2 },
+      { "q": "182. Làm sao để áp dụng chạy 1 hàm Function Toán thủ công tự dệt (VD: hàm convert chữ hoa) lên tất cả ô giá trị trên 1 Cột Pandas?", "options": ["df['Col'].run(function)", "df['Col'].loop(function)", "df['Col'].apply(tên_hàm)", "df.apply() xài chỉ với Matrix"], "answer": 2 },
+      { "q": "183. Tham số 'axis' trong Pandas thường có nghĩa quy chuẩn gì: sum(axis=0) và sum(axis=1)?", "options": ["0 là Cột/Dọc xuống hàng, 1 là Trượt ngang qua Cột", "0 là Tính sai, 1 Tính đúng", "0 là số lẻ, 1 số chẵn", "0 là Hàng, 1 là Biểu đồ"], "answer": 0 },
+      { "q": "184. NumPy Array được index âm (vd z[-1]) mang kết quả gì?", "options": ["Báo lỗi Array", "Trả phần tử có giá trị âm lớn nhất", "Trả về phần tử ngự ở Vị trí Cuối cùng của mảng (Lùi từ đuôi tới)", "Tính giá trị Abs"], "answer": 2 },
+      { "q": "185. DataFrame.sort_values(by='Sales', ascending=False) giải thích ngắn gọn là?", "options": ["Sắp xếp ngẫu nhiên cột Sales", "Sắp xếp toàn bộ Bảng Dữ liệu theo giá trị tại cột 'Sales' dựa theo Tiêu chuẩn Giảm dần (Khổng lồ trên cùng ngọn)", "Tăng cường cột Values", "Chỉ hiển thị giá trị Sai"], "answer": 1 },
+      { "q": "186. np.where(condition, x, y) là lệnh tiện thể của NumPy để làm:", "options": ["Dịch vòng mảng y", "Một vòng if-else nhanh: nếu đúng rải giá trị x, nếu sai lấp giá trị y", "Trả true false rỗng", "Vẽ trục x,y"], "answer": 1 },
+      { "q": "187. Lệnh df.nunique() mang sứ mệnh thông kê loại dữ liệu gì?", "options": ["Tính độ nhạy Num", "Đếm đếm Số lượng Mẫu vật Duy nhất Độc lạ KHÔNG trùng nhau (Number of Unique Values) trong Cột/Series", "Bỏ qua Null values", "Chuyển Null thành con số"], "answer": 1 },
+      { "q": "188. Tham số 'inplace=True' xuất hiện phổ biến trong nhiều hàm (vd: drop, fillna) của Pandas có nhiệm vụ là?", "options": ["Ghi vào Ram", "Di chuyển dữ liệu vào hàm", "Áp đặt kết quả trực tiếp lưu ngược đè vào DataFrame nguyên gốc mà không cần phải Gán lại Biến Mới (VD không cần ghi df = df.drop)", "Sinh hàm in ra text đỏ"], "answer": 2 },
+      { "q": "189. Định dạng nào sau đây của Numpy được cho là nhẹ hơn List và tối giản nhất về Type Memory C++?", "options": ["Tuple object", "np.ndarray (N-dimensional Array) liên kết địa chỉ bộ nhớ theo chuẩn liền kề nhau C-Contiguous", "Python List C", "Data set json"], "answer": 1 },
+      { "q": "190. Pandas hàm df.reset_index(drop=True) giải quyết bài toán mĩ quan nào sau hàng loạt công cuộc lọc Filter?", "options": ["Reset xoá dữ liệu bảng hoàn toàn", "Phục hồi file CSV", "Đánh số thứ tự lùi", "Viết lại hàng Cột chỉ mục Index nguyên thuỷ đếm đều đặn 0,1,2,3 (mặc kệ số rỗng đứt đoạn) và drop=True là dẹp xóa Cột Index tàn dư cũ mốc"], "answer": 3 }
+,
+      {"q": "191. Tại sao hàm kích hoạt tuyến tính (Linear Activation/Identity) rất ít khi được dùng cho lớp ẩn (Hidden Layers) trong mạng Nơ-ron sâu?", "options": ["Vì nó khó tính đạo hàm", "Vì chuỗi các lớp tuyến tính nối tiếp nhau cuối cùng gom lại toán học cũng chỉ tương đương ĐÚNG MỘT lớp tuyến tính duy nhất, làm mất ý nghĩa của 'Mạng Nơ-ron Sâu'", "Nó tốn quá nhiều GPU", "Nó sinh ra NaN liên tục"], "answer": 1},
+      {"q": "192. Hàm kích hoạt nào rất thường xuyên dùng riêng cho lớp đầu ra (Output Layer) của một bài toán Hồi Quy (Regression) dự báo giá nhà?", "options": ["Softmax", "Sigmoid", "Linear (Tuyến tính) hoặc ReLU (nếu giá chỉ dương)", "Tanh"], "answer": 2},
+      {"q": "193. Vấn đề 'Dying ReLU' (Cái chết lâm sàng của ReLU) xảy ra khi nào?", "options": ["Khi learning rate quá nhỏ khiến đạo hàm đi chậm", "Khi model chạy quá số Epoch quy định", "Khi tổng đầu vào của 1 nơ ron bị cấu hình Trọng số đẩy thành số ÂM (<0), hàm ReLU trả về số 0 cứng và gradient bằng 0 vĩnh viễn, Nơ ron chết cứng từ đó không update được nữa", "Tràn lỗi Overflow vì số quá to"], "answer": 2},
+      {"q": "194. Leaky ReLU xử lý vấn đề 'Dying ReLU' bằng cơ chế toán học nào?", "options": ["Thay số 0 bằng hàm Sin(x)", "Thêm một hệ số độ nghiêng (slope) dốc cực nhỏ ví dụ 0.01 cho phần Âm, tức f(x) = 0.01*x nếu x < 0. Giúp rò rỉ 1 ít gradient cho Nơ ron thoi thóp thở lại", "Bỏ phần Âm", "Random ngẫu nhiên trả về 0 hoặc x"], "answer": 1},
+      {"q": "195. Điểm ưu việt của hàm kích hoạt Swish, do Google Brain phát minh có công thức (Swish = x * sigmoid(x)) so với ReLU cứng cáp truyền thống là gì?", "options": ["Chạy cực nhè trên CPU cấu hình yếu", "Dễ hiểu để sinh viên lập trình tay", "Hàm trơn nhẵn mượt mà đạo hàm ở mọi điểm (smooth function) kể cả góc tiệm cận 0, giúp đạo hàm lan truyền mượt trên các cấu trúc mạng sâu ngoằn ngoèo", "Dùng ít dung lượng RAM"], "answer": 2},
+      {"q": "196. Quá trình tính toán của hàm kích hoạt Softmax có nhược điểm lớn gì về mặt vận hành số học phần cứng tính toán máy tính (Numerical Stability)?", "options": ["Không xuất ra được số thập phân", "Chỉ làm việc với ma trận", "Số mũ e^x sinh ra Overflow (Tràn số cực nhanh) nếu giá trị x lớn lọt thỏm vào như e^1000", "Bị ngốn lõi Tensor Core quá mức"], "answer": 2},
+      {"q": "197. Maxout Activation Network (do Lão đại vĩ nhân Ian Goodfellow phát minh) hoạt động ra sao để có tính chống chịu kinh khủng?", "options": ["Lấy giá trị max trung bình toàn bộ ma trận Input", "Nó sinh ra k nhánh hàm song song input rời rạc gộp chung, tính tuyến tính từng nhánh rồi Nhặt ra lấy Giá trị lớn nhất thay vì hàm phi tuyến cứng (f(x) = max(w1x+b1, w2x+b2))", "Cắt làm tròn phẩy động liên tục", "Quay vector Nơ ron 90 độ C"], "answer": 1},
+      {"q": "198. Đầu ra của hàm Sigmoid quy đổi xác suất giới hạn ván ép vòng cung trong thanh quản biên độ [0, 1]. Hàm nào cũng vẽ đường nét cong hình 'S' mượt cực kỳ giống rập khuôn như nó, nhưng phạm vi biên độ thênh thang hơn kẹp ở [-1, 1]?", "options": ["Hàm ReLU", "Hàm ELU", "Hàm quy chuẩn Softsign", "Hàm Hyperbolic Tangent (Tinh tinh - Tanh)"], "answer": 3},
+      {"q": "199. Hàm ELU (Exponential Linear Unit) nổi tiếng ứng phó phần Âm tuyệt hơn ReLU vạn lần, công thức tính toán độ cong uốn xéo của đuôi âm của ELU nó cậy nhờ phép toán nào tạo dáng chủ đạo?", "options": ["Tạo dốc nhẹ bằng Sin(x)", "Bẻ cong nhánh âm từ từ tuân thủ hàm số mũ lũy thừa cơ số e tự nhiên e^x (cụ thể xài công thức a * (e^x - 1))", "Logarit Log(x)", "Phân bố chi-squared x^2"], "answer": 1},
+      {"q": "200. Trong các cơ chế Van Gated đập đi xây dòng của Mạng chuỗi hồi quy thông minh LSTM/GRU, bộ chổi cổng (Forget Gate, Cổng Input Gate...) lúc nào cũng luôn luôn ưu tiên sử dụng sử dụng cái hàm kích hoạt nào để biến luồng tư duy thành % cái khóa van đóng/mở?", "options": ["Luôn là ReLU (sạch sẽ rỗng từ 0 tới chót vót Dương Vô cực)", "Luôn là Tanh (-1 lọt thỏm tời 1 âm dương)", "Cực kì ưu tiên dùng Sigmoid (để làm van nghẽn van nén ép xác suất giới hạn nghiêm cực từ 0.0->1.0: cho ra sự quyết liệt đóng chặt kín hay mở cho qua toang)", "Hàm Linear Bậc thang tuyến tính ngây khô"], "answer": 2}
+    ];
+
+    const explanations = [
+      "Học có giám sát (Supervised learning) yêu cầu dữ liệu phải có gán nhãn (labels) để mô hình có thể học được mối quan hệ giữa đầu vào và đầu ra.",
+      "Overfitting (quá khớp) xảy ra khi mô hình quá phức tạp, 'học vẹt' luôn cả nhiễu trong dữ liệu huấn luyện thay vì học các mẫu tổng quát.",
+      "K-means là một thuật toán học không giám sát (unsupervised) vì nó tìm cách phân cụm dữ liệu mà không cần nhãn (unlabeled data).",
+      "Bias (độ lệch) cao thường dẫn đến Underfitting (chưa khớp), nghĩa là mô hình quá đơn giản và không thể nắm bắt được quy luật của dữ liệu.",
+      "Trong thuật toán K-Nearest Neighbors (KNN), 'k' đại diện cho số lượng điểm dữ liệu láng giềng gần nhất được xét để đưa ra dự đoán.",
+      "Mean Squared Error (MSE) là hàm mất mát phổ biến nhất để đo lường sai số trong các bài toán hồi quy (regression).",
+      "Các thuật toán dựa trên khoảng cách như SVM hay KNN rất cần feature scaling vì nếu không, các đặc trưng (features) có giá trị lớn hơn sẽ lấn át các đặc trưng khác khi tính toán khoảng cách.",
+      "Cross-validation giúp đánh giá mức độ ổn định và khả năng tổng quát hóa (generalize) của mô hình trên phần dữ liệu chưa từng thấy.",
+      "Regularization (điều chuẩn) thêm hình phạt vào hàm mất mát đối với các trọng số lớn, giúp giảm độ phức tạp của mô hình và ngăn ngừa overfitting.",
+      "F1-score là trung bình điều hòa của Precision và Recall, là thước đo tốt hơn Accuracy khi làm việc với tập dữ liệu mất cân bằng (imbalanced data).",
+      "Hàm kích hoạt (Activation functions) đưa tính phi tuyến (non-linearity) vào mạng nơ-ron, cho phép mô hình học được các hàm toán học phức tạp.",
+      "ReLU (Rectified Linear Unit) sẽ trả về chính giá trị đầu vào nếu nó dương, và trả về 0 nếu nó âm. Công thức là max(0, x).",
+      "Softmax biến đổi một mảng các giá trị thành phân phối xác suất (có tổng bằng 1), rất hoàn hảo cho bài toán phân loại đa lớp (multi-class).",
+      "Cross entropy là hàm mất mát tiêu chuẩn dùng để đánh giá trong các bài toán phân loại.",
+      "Gradient Descent được sử dụng để cập nhật lặp lại các trọng số của mô hình theo hướng làm giảm giá trị của hàm mất mát.",
+      "Nếu Learning rate (tốc độ học) quá lớn, trình tối ưu hóa có thể nhảy vọt qua điểm hội tụ, khiến mất mát dao động và mô hình không thể hội tụ (prevent convergence).",
+      "Vanishing gradient (triệt tiêu đạo hàm) thường xảy ra trong các mạng nơ-ron rất sâu, khi đạo hàm nhân dồn lại liên tục qua từng lớp và tiến dần về 0.",
+      "Dropout tắt ngẫu nhiên một tỷ lệ các nơ-ron trong quá trình huấn luyện để tránh sự phụ thuộc lẫn nhau giữa các nơ-ron, giúp giảm overfitting.",
+      "Batch normalization chuẩn hóa đầu vào của các lớp, giúp quá trình huấn luyện ổn định hơn và tiến hành nhanh hơn.",
+      "Early stopping (dừng sớm) theo dõi độ lỗi trên tập validation và dừng huấn luyện mạng trước khi mô hình bắt đầu bị overfitting.",
+      "CNN (Convolutional Neural Network) được thiết kế đặc biệt với các bộ lọc phép tích chập (convolution) nên rất mạnh mẽ trong việc xử lý ảnh.",
+      "Lớp Pooling (ví dụ: Max Pooling) giúp giảm kích thước không gian (chiều dài, chiều rộng) của feature map, từ đó giảm thiểu tính toán.",
+      "Transformers có khả năng xử lý song song và phụ thuộc cực kỳ nhiều vào cơ chế Attention (đặc biệt là Self-Attention) thay vì vòng lặp.",
+      "Vì Transformer xử lý toàn bộ từ cùng lúc (không theo tuần tự), Positional encoding được thêm vào để cung cấp thông tin về vị trí và thứ tự ngữ cảnh của token đó.",
+      "LSTM ra đời nhằm giải quyết vấn đề Vanishing gradient (triệt tiêu đạo hàm) trong các mạng Recurrent Neural Network (RNN) bằng cách dùng cơ chế cổng (gates) và bộ nhớ (memory cell).",
+      "Gradient clipping cắt gọt các đạo hàm bị vượt quá một ngưỡng nhất định, giúp ngăn chặn hiện tượng Exploding gradient (bùng nổ đạo hàm).",
+      "Adam (Adaptive Moment Estimation) khác với SGD ở chỗ nó tính toán tốc độ học thích ứng (adaptive learning rate) cho từng tham số dựa vào động lượng (momentum) bậc 1 và bậc 2.",
+      "Xavier initialization khởi tạo trọng số theo cách giữ cho phương sai của cả đầu vào và đạo hàm ổn định qua các lớp, rất quan trọng đối với mạng nơ-ron sâu.",
+      "He initialization là phương pháp khởi tạo tối ưu được thiết kế riêng cho các hàm kích hoạt có tính chất giống ReLU.",
+      "Learning rate scheduling thay đổi tốc độ học theo thời gian chạy hoặc theo số epoch (thường là giảm dần) để mô hình dễ dàng hội tụ đến giá trị cực tiểu tốt nhất hơn.",
+      "Momentum giúp tích lũy các gradient quá khứ thành dạng đà quán tính, nhờ đó giảm bớt sự dao động của gradient giúp tăng tốc quá trình huấn luyện trên đường dốc của hàm mất mát.",
+      "Tập batch size nhỏ (Small batch size) tạo ra các nhát gradient nhiễu (noise gradient), thường giúp mô hình dễ dàng thoát khỏi các cực tiểu cục bộ (local minima).",
+      "Weight decay bản chất là thêm một thành phần phạt (L2 Regularization) trực tiếp vào quy tắc cập nhật trọng số để kìm nén giá trị trọng số.",
+      "Gradient descent di chuyển ngược hướng của gradient để tìm kiếm cực tiểu cục bộ (local minimum) của hàm mất mát.",
+      "Adam hiện tại là thuật toán tối ưu (optimizer) được dùng rộng rãi nhất do tính hiệu quả, tự động điều chỉnh siêu tham số và hội tụ cực nhanh.",
+      "Công thức của Precision (Độ chuẩn xác) là Tỷ lệ các mẫu dự đoán đúng là dương thật sự (TP) chia cho tổng mẫu dự đoán dương (TP + FP).",
+      "Công thức của Recall (Độ phủ) là Số lượng biến cố được mô hình nhận diện (TP) chia cho tổng số lượng biến cố thực tế đã có (TP + FN).",
+      "F1 score là trung bình điều hòa của cả Precision và Recall, dùng để đánh giá mô hình tổng quan hơn khi 2 chỉ số này ngược nhau.",
+      "Trong đường cong ROC (Receiver Operating Characteristic), trục hoành là FPR (False Positive Rate) và trục tung là TPR (True Positive Rate).",
+      "AUC là Area Under the ROC Curve - là diện tích bên dưới toàn bộ đường cong ROC. Chỉ số này càng gần 1, mô hình phân loại càng tốt.",
+      "Intersection over Union (IoU) đo tỷ lệ diện tích phần giao (overlap) trên phần hợp giữa bounding box do mô hình dự báo và ground-truth bounding box.",
+      "mAP (Mean Average Precision) cực kỳ phổ biến để đánh giá các mô hình Object Detection (phát hiện đối tượng) cho tất cả các lớp (classes).",
+      "Average Precision (AP) tính diện tích bên dưới đường cong Precision-Recall của từng class một cách tóm tắt hiệu năng.",
+      "Chỉ số IoU (Intersection over Union) cũng là metric phổ biến nhất để đo đạc sự tương đồng và độ bao phủ ở các mặt nạ trong bài toán Segmetation.",
+      "Confusion matrix (Ma trận nhầm lẫn) có chứa 4 thông số cơ bản: True Positives (TP), True Negatives (TN), False Positives (FP), và False Negatives (FN).",
+      "One-hot encoding biến đổi dữ liệu phân loại hạng mục (Categorical data) thành các vector nhị phân 0 và 1 (vì mô hình chỉ nhận số học).",
+      "Kỹ thuật Normalization (ví dụ: Min-Max normalization) thường đưa thu phóng số liệu các đặc trưng về miền giá trị [0, 1].",
+      "Chuẩn hóa Standardization (hay Z-score normalization) biến đổi dữ liệu thành phân phối có giá trị trung bình (mean) là 0 và độ lệch chuẩn (std) là 1.",
+      "Các cách xử lý missing values phổ biến là sử dụng một đại lượng thống kê (ví dụ: trung bình), phép nội suy hoặc loại bỏ luôn dòng bị khuyết.",
+      "Data augmentation (Tăng cường dữ liệu) là phương pháp áp dụng các biến đổi (như xoay ảnh, lật ảnh, đổi pixel) nhằm tăng giả lập kích thước dataset cho Computer Vision."
+      ,
+      "Transfer Learning tận dụng lại các đặc trưng đã học được từ một bộ dữ liệu lớn (như ImageNet) để huấn luyện cho một tác vụ mới, giúp tiết kiệm thời gian và tài nguyên.",
+      "ResNet sử dụng Skip Connection (Residual blocks) để cộng tín hiệu đầu vào với tín hiệu đầu ra của một số lớp, giúp khắc phục vấn đề Vanishing Gradient ở các mạng rất sâu.",
+      "Autoencoder học cách nén dữ liệu đầu vào thành một biểu diễn ẩn (latent space) có số chiều nhỏ hơn ở phần Encoder, và tái tạo lại dữ liệu ban đầu ở phần Decoder.",
+      "GANs gồm Generator cố gắng tạo ra dữ liệu giả mạo giống thật nhất, và Discriminator cố gắng phân biệt giữa dữ liệu thật và dữ liệu giả tạo từ Generator.",
+      "Word2Vec ánh xạ các từ vào một không gian vector (Word Embeddings) sao cho các từ có ngữ nghĩa tương đồng sẽ nằm gần nhau trong không gian đó.",
+      "K-Fold chia dataset thành K phần bằng nhau. Quá trình lặp lại K lần, mỗi lần dùng 1 phần khác nhau làm tập validation và phần còn lại để huấn luyện.",
+      "R2 score đo lường mức độ phù hợp của mô hình hồi quy. Hàm ý tỷ lệ phương sai của biến mục tiêu (target) có thể được giải thích bằng các biến độc lập (features). Giá trị càng gần 1 càng tốt.",
+      "Data Leakage khiến mô hình nhận được những 'gợi ý' không hợp lệ từ tập đánh giá trong quá trình huấn luyện, làm độ chính xác trên tập test rất cao nhưng thực tế khi deploy lại siêu tệ.",
+      "PCA là thuật toán không giám sát dùng phép biến đổi trực giao để chuyển dữ liệu vào một không gian mới có số chiều nhỏ hơn, mà vẫn giữ lại nhiều thông tin (phương sai) nhất có thể.",
+      "t-SNE là thuật toán giảm chiều phi tuyến tính cực kì hiệu quả trong việc trực quan hóa tập dữ liệu nhiều chiều để dễ dàng phân cụm bằng mắt thường.",
+      "Bagging (ví dụ: Random Forest) gồm các weak learners độc lập để giảm Variance (phương sai). Boosting (ví dụ: XGBoost) chạy tuần tự để giảm Bias (độ lệch).",
+      "Random Forest tạo độ đa dạng cho từng cây con bằng cơ chế Bagging (Bootstrap Aggregation) lấy mẫu ngẫu nhiên từ dữ liệu, và feature randomness lấy ngẫu nhiên một số cột thuộc tính.",
+      "XGBoost (eXtreme Gradient Boosting) là thư viện cực kỳ mạnh triển khai tối ưu cho Gradient Boosting framework với các cơ chế regularize như L1/L2 penalty.",
+      "Grid Search tạo ra một mạng lưới các giá trị thủ công để kết hợp với nhau nhằm duyệt qua toàn bộ nhằm dò tìm ra bộ cấu hình siêu tham số (Hyperparameters) cho mô hình tốt nhất.",
+      "L1 (Lasso) tính phạt theo Trị tuyệt đối nên nó có tính chất 'thưa thớt' (Sparsity) éo trọng số về đúng 0. L2 (Ridge) phạt theo Bình phương nên chỉ thu nhỏ trọng số về sát 0.",
+      "Khởi tạo tất cả trọng số (weights) giống hệt nhau (như bằng 0) sẽ làm các neuron ở mỗi layer tính ra đầu ra giống hệt nhau và nhận cùng lượng gradient update, khiến mạng không thể học.",
+      "Learning Rate Warmup ngăn chặn việc mô hình thay đổi trọng số quá tay trong giai đoạn đầu tiên (khi mà gradient còn rất lớn và random), giúp quá trình hội tụ ổn định hơn.",
+      "LSTM có 3 cổng (Input, Forget, Output). GRU hợp nhất lại còn 2 cổng (Reset, Update gate) giúp giảm độ phức tạp tính toán và lượng tham số nhưng hiệu năng thường xấp xỉ.",
+      "Encoder sẽ xử lý chuỗi đầu vào thành một context vector bí ẩn. Sau đó Decoder sẽ dựa vào context vector này để nhả và sinh tuần tự phần văn bản đầu ra.",
+      "BLEU đo lường mức độ tương đồng bằng các token trùng lặp (n-grams) giữa văn bản do mô hình dịch ra so với các văn bản tham chiếu do chuyên gia con người dịch thuật.",
+      "Greedy Search chỉ xét từ xuất sắc nhất ở mỗi bước. Beam Search lưu giữ thông tin của k-nhánh câu tốt nhất trong suốt quá trình nhả từ, cuối cùng trả về chuỗi có xác suất tổng là cao nhất.",
+      "BERT sử dụng khối Encoder của Transformer theo cơ chế 2 chiều (Bidirectional) từ trái sang phải và phải sang trái cùng lúc để nắm đầy đủ ngữ cảnh xung quanh từ.",
+      "BPE/WordPiece bẻ nhỏ từ thành các token như 'un', '##friend', '##ly'. Việc dùng Subword có thể xử lý mượt mà các 'Từ hiếm' (Out-Of-Vocabulary) và giảm kích cỡ bộ từ vựng.",
+      "Self-attention tạo ra liên kết dày đặc giữa MỌI từ trong câu bất chấp khoảng cách. Đầu vào của mỗi token là hàm tổng có trọng số từ toàn bộ token khác.",
+      "Trong MLM của BERT, một vài tỉ lệ % từ ngẫu nhiên trong câu sẽ bị che đi bằng token [MASK]. Mô hình bị ép phải dự đoán được từ đã che dựa vào các từ còn lại.",
+      "Thay vì Fine-tuning phức tạp (ví dụ 100 mẫu), Zero-shot đánh giá LLM để hoàn thành bài tập mới toanh chỉ thông qua chỉ thị bằng chữ trên prompt.",
+      "Trường hợp không thể kẻ đường thẳng trên mặt phẳng 2D để phân tách class, Kernel trick (VD RBF, Polynomial) âm thầm nội xạ ánh xạ điểm lên chiều không gian cao hơn để tách chúng bằng một siêu mặt phẳng.",
+      "Điểm Elbow (Điểm khuỷu tay) là điểm trên đồ thị hàm Loss mà tại đó độ giảm của thông tin nội cụm (Inertia) bắt đầu chậm dần. Điểm này thường được coi là 'k' hợp lý.",
+      "Khác với k-means bắt buộc phải chỉ định 'k', DBSCAN phân cụm dựa trên mật độ. Các dữ liệu nằm ở vùng thư thớt sẽ tự động rơi vào nhóm nhiễu (outliers/noise).",
+      "Khi số chiều cực cao, mọi dữ liệu bỗng nhiên tản ra rất xa nhau trong không gian vô tận đó, khiến số lượng mẫu lớn khổng lồ mới đủ khả năng phủ hết đặc trưng.",
+      "SVD được dùng phổ biến để phân rã ma trận thưa User-Item lớn ra thành các dạng vector ẩn của cả người dùng và sản phẩm trong Hệ thống khuyến nghị.",
+      "Khung MDP là cách toán học hóa một vấn đề RL bài bản: Agent xem xét State của môi trường, quyết định 1 Action, môi trường chuyển đổi State và cấp Reward.",
+      "Thay vị tối ưu thao tác như Policy-based, Q-learning tính toán và điền bảng Q-Table để đánh giá xem hành động nào tại state hiện thời là tốt và đáng giá nhất.",
+      "Môt con Agent tốt phải cân bằng tính Thăm dò (Exploration - đi lung tung có gì điểm mới bất ngờ không) và tính Khai phá (Exploitation - Dùng vốn đã học được cho chắc ăn).",
+      "Ý thức bình luận TÍCH CỰC và TIÊU CỰC là tác vụ NLP chuẩn phân loại nhị phân rất tiêu chuẩn.",
+      "Content-based xem xét người dùng thích Bộ phim Thể loại Gì, Đạo diễn Nào, từ đó tìm tất cả các mục có Metadata tương tự để đề xuất cho họ.",
+      "Vì chưa có data lịch sử, hệ thống Lọc cộng tác bắt đầu bị mù và đành phải gợi ý Random các sản phẩm Phổ Biến theo Trending.",
+      "Với tập dữ liệu y tế lác đác vài ca dương tính, SMOTE chủ động tạo ra các trường hợp sinh ảo hợp lệ xung quanh ca hiện có để bổ sung dataset Minor, giúp làm mờ ranh giới Imbalance.",
+      "IQR chia trục số liệu thàng tứ phân vị (Q1,Q3), thường Outliers là các điểm cách quá xa vùng bình thường này, chúng ta cần xoá bỏ hoặc giới hạn nó về biên (Winsorization).",
+      "Dữ liệu ngoài thực tế không tĩnh. Thị hiếu xã hội năm 2024 thay đổi làm cho Data Distribution khác hẳn hồi 2021, mô hình hồi đó train đem ra áp bây giờ đã lạc hậu.",
+      "Mô hình train trên PyTorch có thể cực cồng kềnh. Xuất khẩu cấu hình ấy sang định dạng ONNX/TensorRT giúp nó chạy siêu mượt với tốc độ mili-second trên nhiều hệ sinh thái CPU, Edge, GPU.",
+      "INT8 nhẹ hơn FP32 đến 4 lần. Dù xén số phẩy động về số cố định có thể làm giảm xíu độ chính xác nhưng lại ép được mô hình khổng lồ vào con chip nhỏ tí.",
+      "Thật ra trong 100% parameter mô hình rất nhiều Parameter đóng vai trò bù nhìn thừa thãi. Cắt phăng chúng thay bằng 0 giúp tăng tốc mà hiệu quả cuối không khác đáng kể.",
+      "Khi update mà ReLU bị âm, nó sẽ trả về 0 gradient tuyệt đối. Gradient 0 đi ngược về trước làm cả dây đó 'Chết lâm sàng'. Leaky ReLU là một giải pháp cho việc này.",
+      "Khác với ReLU cứng nhắc có một góc nhọn kệnh cỡm ở số 0, GELU nội suy sự mềm dẻo từ hàm mật quy chuẩn Gaussian, giúp LLMs bắt mượt mà gradient hơn.",
+      "Điện thoại Apple của bạn tự train ra các patterns và gửi kinh nghiệm nó học được, chứ KHÔNG GỬI hình ảnh hay tin nhắn của bạn về máy chủ Apple.",
+      "Thuật toán tiêu biểu: CLIP. Nó tối đa hóa độ tương thích của nội dung trong 'Ảnh Con Chó' và 'Chữ Con chó' do đó nó đối chiếu để bắt mối ràng buộc ngầm giữa ảnh-chữ.",
+      "Bias cao là Model quá ngố, Variance cao là Model học vẹt thông minh (overfit). Việc tìm điểm vàng giữa Underfitting và Overfitting luôn là câu trả lời của 1 Data Scientist.",
+      "Với nguồn text/hình khổng lồ, kỹ sư ép mô hình giải trò chơi (vd: Che chữ để đoán, xoay ảnh để đoán góc quay). Mô hình tự chắt lọc trích xuất sự thông thái mà khỏi tốn tiền thuê người Gán Nhãn.",
+      "Nó đánh trọng số xác suất để máy tính hiểu: Khi dịch câu tiếng Pháp này, tao phải tập trung điểm nhìn bao nhiêu % % % vào từ X Y Z trong tiếng Anh. Tự nhiên như não người."
+      ,
+      "Tính z = x*w + b = (2*0.5) + (-1*2.0) + (3*-1.0) - 1 = 1 - 2 - 3 - 1 = -5. Hàm ReLU(-5) = max(0, -5) = 0.",
+      "P=100 nên FN = 100 - 80 = 20. N=100 nên TN = 100 - 10 = 90. Accuracy = (TP+TN)/(P+N) = (80+90)/200 = 170/200 = 0.85. Precision = TP/(TP+FP) = 80/(80+10) = 80/90 ≈ 0.888.",
+      "e^1 ≈ 2.7, e^2 ≈ 7.4, e^0 = 1. Tổng = 2.7 + 7.4 + 1 = 11.1. Xác suất của phần tử thứ 2 = 7.4 / 11.1 ≈ 0.66.",
+      "Công thức tính không gian chập: Kích_thước_ra = (Kích_thước_vào - F + 2P)/S + 1 = (28 - 3 + 0)/1 + 1 = 25 + 1 = 26. Kích thước sẽ là 26x26.",
+      "Thay y = 1, p = 1 vào môt cách lý tưởng: L = -[1*log(1) + 0]. Vì log(1) = 0, nên L = 0 (Sai số bằng 0 do mô hình hoàn toàn đúng).",
+      "Độ đặc hiệu TNR phản ánh tỷ lệ dự đoán đúng trên tổng số âm tính. Tỷ lệ dương tính giả FPR = 1 - Specificity = 1 - 0.9 = 0.1.",
+      "Pooling giúp hạ chiều không gian bằng tỷ lệ nghịch của kernel stride: Đầu ra = 32 / 2 = 16. Vậy ta có bản đồ 16x16.",
+      "Mean (Kỳ vọng) = (2+4+4+6)/4 = 16/4 = 4. Variance = Tổng bình phương độ lệch / N = [(2-4)^2 + 0 + 0 + (6-4)^2]/4 = (4 + 4)/4 = 2.",
+      "Đoạn thẳng Euclidean Distance = Căn_bậc_2_của( (1-1)^2 + (1 - (-2))^2 + (0 - 4)^2 ) = sqrt(0 + 9 + 16) = sqrt(25) = 5.",
+      "Trọng số đóng góp của một trục chính bằng eigenvalue của nó chia cho tổng. Tổng variance = 10 + 2 + 0.5 = 12.5. Tỷ lệ của PC1 = 10 / 12.5 = 0.8 (Tương đương 80% lượng thông tin ban đầu).",
+      "F1-score là trung bình điều hòa: F1 = 2 * (Precision * Recall) / (Precision + Recall) = 2 * (0.8 * 0.8) / (0.8 + 0.8) = 2 * 0.64 / 1.6 = 0.8.",
+      "Khi z = 0, thì e^0 = 1. Áp dụng công thức: s(0) = 1 / (1 + 1) = 1 / 2 = 0.5.",
+      "Tính đạo hàm theo quy tắc chuỗi: dL/dy_pred = 2 * (y_pred - y). Thay giá trị vào ta có = 2 * (3 - 1) = 4.",
+      "Khoảng cách Manhattan được tính bằng độ lệch tuyệt đối: D = |1 - 4| + |2 - 6| = |-3| + |-4| = 3 + 4 = 7.",
+      "TF-IDF = TF * IDF = 2 * 1.5 = 3.0.",
+      "Tâm của cụm trong không gian Euclid được tính bằng Trung Bình Cộng của tất cả các vector của cụm. x = (1+3)/2 = 2, y = (2+4)/2 = 3. Tọa độ là (2, 3).",
+      "Mỗi neuron đầu ra cần 10 kết nối từ vế trước, tổng là 10 * 5 = 50 kết nối (weights). Ngoài ra mỗi neuron đầu ra có 1 tham số bias. Tổng = 50 + 5 = 55 parameters.",
+      "Áp dụng công thức update: w_new = 1.0 - (0.1 * 2.0) = 1.0 - 0.2 = 0.8.",
+      "Thế s(z) = 0.5 vào công thức: Đạo hàm = 0.5 * (1 - 0.5) = 0.5 * 0.5 = 0.25. (Đây cũng là giá trị kịch trần lớn nhất của đạo hàm Sigmoid).",
+      "Theo toán học thống kê, Định lý Bayes đảo ngược xác suất phụ thuộc bằng công thức: P(A|B) = [P(B|A) * Sự ưu tiên P(A)] / P(B).",
+      "Một cái filter chứa một lớp ma trận nhỏ 3x3 ứng với TỪNG channel của đầu vào. Tức là 3 * 3 * 3 = 27 cục weights, cộng thêm duy nhất 1 bias của riêng filter đó = 28.",
+      "Thế thông số: Output O = (2 - 1) * 2 + 3 - 2*(0) = 1 * 2 + 3 = 5. Vậy mặt ảnh sẽ zoom lên kích thước 5x5.",
+      "Xác suất cho mặt sấp p=0.5, ngửa q=0.5. H = - (0.5 * log2(0.5) + 0.5 * log2(0.5)). Mà log2(0.5) = -1. Vậy H = - (0.5*-1 + 0.5*-1) = - (-1) = 1.0 bit thông tin.",
+      "Công thức Accuracy = (Tổng đoán đúng) / (Tổng các trường hợp). Acc = (TP + TN) / (TP + TN + FP + FN) = (40 + 50) / (40 + 50 + 5 + 5) = 90 / 100 = 0.9 (90%).",
+      "Penalty = 0.1 * ( |-0.5| + |1.0| + |2.0| ) = 0.1 * (0.5 + 1.0 + 2.0) = 0.1 * 3.5 = 0.35.",
+      "Penalty = 0.1 * ( 1.0^2 + 2.0^2 ) = 0.1 * ( 1.0 + 4.0 ) = 0.1 * 5.0 = 0.5.",
+      "Vì toàn bộ chung 1 đội 'A', Tỉ lệ P_A = 100% = 1.0. Tỉ lệ đội khác P_B = 0. Vậy Gini = 1 - (1.0^2) - (0^2) = 1 - 1 = 0. Node có Gini = 0 thể hiện sự Cực Xanh Sạch (Pure Node).",
+      "Phép nhân Dot Product = Nhân lần lượt vị trí rồi cộng dồn lại: (1 * -1) + (2 * 3) = -1 + 6 = 5.",
+      "Cứ đi qua thêm một lớp 3x3 stride 1, thì viền ảnh gốc quan sát được tăng thêm 2 đơn vị (từ mép lân cận 1-1). Nên sau 2 lớp là 5x5, sau 3 lớp là 7x7.",
+      "Cosine(A, B) = Dot(A,B) / (Norm(A)*Norm(B)) = (1*0 + 0*1) / 1 = 0/1 = 0. Khi góc giữa chúng là 90 độ (Mã hóa trực giao hoàn toàn và không nói chung về 1 ngữ pháp nào)."
+      ,
+      "Tính z = x*w + b = (2*0.5) + (-1*2.0) + (3*-1.0) - 1 = 1 - 2 - 3 - 1 = -5. ReLU(-5) = max(0, -5) = 0.",
+      "P=100 nên FN = 100 - 80 = 20. N=100 nên TN = 100 - 10 = 90. Accuracy = (TP+TN)/(P+N) = (80+90)/200 = 170/200 = 0.85. Precision = TP/(TP+FP) = 80/(80+10) = 80/90 ≈ 0.888.",
+      "e^1 ≈ 2.7, e^2 ≈ 7.4, e^0 = 1. Tổng = 2.7 + 7.4 + 1 = 11.1. Xác suất của phần tử thứ hai = e^2 / Tổng ≈ 7.4/11.1 ≈ 0.66 (gần 70%). Do đó phần tử thứ hai lớn nhất.",
+      "Công thức tính kích thước đầu ra: Output_size = (Input_size - F + 2P)/S + 1 = (28 - 3 + 0)/1 + 1 = 25 + 1 = 26. Do đó kích thước là 26x26.",
+      "Thay y = 1, p = 1: L = -[1*log(1) + 0*log(0)]. Vì log(1) = 0, nên L = 0 (Lí tưởng khi mô hình tự tin hoàn toàn và đúng nhãn).",
+      "FPR = 1 - Specificity = 1 - 0.9 = 0.1.",
+      "Kích thước đầu ra = 32 / 2 = 16. Kích thước mặt chiều sẽ giảm đi một nửa trên mỗi trục tọa độ thành 16x16.",
+      "Mean = (2+4+4+6)/4 = 16/4 = 4. Variance = [(2-4)^2 + (4-4)^2 + (4-4)^2 + (6-4)^2]/4 = [4 + 0 + 0 + 4]/4 = 8/4 = 2.",
+      "Distance = sqrt((1-1)^2 + (1 - -2)^2 + (0 - 4)^2) = sqrt(0 + 9 + 16) = sqrt(25) = 5.",
+      "Tổng phương sai = 10.0 + 2.0 + 0.5 = 12.5. Tỷ lệ phương sai được giải thích bởi PC1 = λ1 / Tổng = 10.0 / 12.5 = 0.8 (tức 80%)."
+      ,
+      "Data leakage tiêu biểu: Bạn muốn dự đoán có bệnh hay không, nhưng lại cho mô hình học thuộc tính 'Mã số thuốc điều trị bệnh' - thứ chỉ có SAU khi đã biết có bệnh.",
+      "Không giống Sigmoid quy về 0 đến 1, Tanh quy phân phối qua khoảng âm dương [-1, 1] nên trung bình hóa kết quả quanh số 0 tốt hơn.",
+      "Nếu bạn có 1000 ảnh, Batch Size = 100. Tập dữ liệu chia ra 10 Batches. Thì đi qua hết 10 lần cập nhật đó (đủ bộ 1000 ảnh) mới là hoàn thành 1 Epoch.",
+      "Nó Naive vì nó cho rằng Mọi đặc tính đều chả liên quan gì nhau. (Kiểu như Đặc tính Mưa và Ẩm ướt là độc lập, mặc dù thực tế chúng dây dưa với nhau cực mạnh).",
+      "Gradient bay tứ tung lên cỡ triệu tỉ, thì Gradient Clipping kẹp nó lại cứng ngắc ở một ngưỡng trần tối đa (vd giá trị 1.0) nhằm không để model đi thụt lùi sai lầm.",
+      "RNN phải nhai câu từ trái quá phải 1 cách chậm chạp. Transformer đọc Cùng 1 lúc bộ câu chữ nên nó Train với tốc độ cực nhanh trong các Siêu máy tính.",
+      "BLEU (Bilingual) quen thuộc với Dịch song ngữ. ROUGE (Recall-Oriented...) hay dùng cho Tóm lược Văn Bản (Text Summary).",
+      "Nếu từ điển có 100.000 từ, One-hot biến 1 từ thành array có 99.999 số 0 và chỉ có một số 1. Máy tính tốn RAM cồng kềnh phi mã chỉ để nhân đống số 0 đó.",
+      "Hệ thống biết từ 'Tốt', 'Xấu'. Giờ bạn bắt nó đánh giá từ 'Tuyệt_Cú_Mèo'. Nó mù mờ dính ngay OOV Error. BPE Subwords là cái giúp sửa cái này phần nhiều.",
+      "Từ 'unfriendly' lạ hoắc, BPE chẻ nó ra Subwords 'un', 'friend', 'ly' là những mẫu chung nó học nát rồi -> Từ lạ OOV được giải mã dễ dàng.",
+      "Conv 2D trượt khung vuông qua hình ảnh. Conv 1D trượt vạch dọc qua trục các câu chữ liên tiếp hoặc trục thời gian dao động nhiệt.",
+      "Generator sinh ảnh đánh lừa, Discriminator đóng vai thanh tra. Hai lớp đối kháng train nhau xoắn ốc thăng hoa liên tục.",
+      "YOLO dự đoán mỗi hộc boundingbox với format 4 nhãn [x, y, w, h] kèm thêm độ tự tin Confidence nữa.",
+      "Nếu xoay 180 ngược số 6, nó sẽ thành số 9. Tăng cường kiểu này làm Model bị loạn nhận diện nhãn sai bét toàn bộ.",
+      "Cho đạo hàm trượt qua đường Skip connect mà không bị hao hụt. Điều này giúp Resnet chồng hàng trăm lớp mà đạo hàm không bị biến mất vanishing.",
+      "Ví dụ có 80 quả táo và 20 quả cam. Lệnh Stratified khiến mọi Fold test đều chứa CÂN LƯỢNG MẪU chuẩn như tỷ lệ 8:2 này, không có ngoại lệ làm lệch mô hình.",
+      "Tuy tên là phi-tham-số nhưng Non-parametric (như KNN hay SVM RBF) phụ thuộc vào số lượng điểm dữ liệu tham chiếu (VD KNN lưu cả bảng dataset). Còn model DL Parametric có 1500w thì 1 tỷ chữ vào nó cũng chỉ có 1500 biểu thức toán nội bộ W đó.",
+      "Đám đông bù lấp khuyết điểm của nhau. Mỗi cái cây trong Random Forest dùng 1 nửa dữ liệu và 1 lượng Random Node Features. Cuối cùng đem Vote đồng loạt.",
+      "Tính kết thừa. Cây đầu hụt 5đ, cây sau sửa cho cây đầu và hụt 1đ, cây 3 đắp thêm 1đ để làm kết quả bù khuyết đỉnh cao. Boosting là quá trình sửa sai đồng tâm.",
+      "Nếu một nhiễu Outlier bị tiên đoán lệch 100đ, L2 MSE sẽ phạt nó mặn mòi vọt lên 10.000 (Bình phương), kéo lệch quỹ đạo model. L1 MAE chỉ phạt đúng 100 thẳng đuột.",
+      "Lấy dữ liệu Tương lai của tháng 10 năm sau để đi train, và test vào tháng 2 ở Quá khứ là một tội ác vi phạm Logic tự nhiên Data Leakage cực mạnh.",
+      "Nếu ép nén Data về phần nút thắt cổ chai, và khôi phục lại. Dữ liệu Bình Thường giải nén giống hệ lúc đầu, Dữ liệu Bất Thường sẽ bị khôi phục với số đo LOSS sai bét lớn bất thường.",
+      "Thuật toán CBOW và Skip-gram cho Word2vec cho ra bảng array (0.44, -1.2, ..) mang tính 'Hình Học của Ngôn Từ', Vd: Vector(King) - Vector(Man) + Vector(Woman) = Vector(Queen).",
+      "Nếu đọc từ trái sang, chữ 'Bank' có thể là Ngân hàng. Nhưng đọc chiều ngược lại đằng sau có chữ 'of the River' thì đó phải là Bờ Sông.",
+      "Não bộ pre-train nó đã biết phát hiện mép chó, mép mèo, lá cây. Mình chỉ Fine-tune 1 lớp cực nhỏ ở đuôi để điều hướng trí khôn nó sang Nhiệm vụ Phân Loại Vét Thương trên Da.",
+      "Lớp Pool triệt tiêu sự dịch chuyển toạ độ vài pixels của bức ảnh, giúp con mèo có bay qua góc hình thì mảng feature đặc tính mèo cũng chầm chậm nhảy theo tương xứng.",
+      "Đào tạo người lính thì ta bịt 1 mắt của họ (Dropout) cho họ train thích nghi ở điều kiện gian khó. Khi đưa ra đánh trận thực tế (Inference), họ mở mắt nhìn bằng sức mạnh All Neuron 100%.",
+      "Hệ thống Youtube có thuật toán Suggest hoàn hảo. Nhưng khi 1 User tài khoản mới toanh lập ra ngày hôm nay thì AI pó rốn không biết Recommend CÁI GÌ vào trang chủ (Cold Start).",
+      "Góc chiếu nào mà data phân tán trượt bung tỏa trải rộng nhất, tức là góc đó chứa Cực Nhiều hàm lượng thông tin chênh lệch (Thông tin sinh học, địa lý v.v). Mấy cái chèn chét đè lên nhau (Phương sai bé) thì PCA bỏ hết.",
+      "Transformer giải mã đại từ 'It' (Nó là cái gì) ở cuối câu bằng cách nối 1 đường ống kết nối 'It' với TẤT CẢ TỪ cự li đằng đầu và phát hiện It mang % điểm cao nhất chốc vào chữ 'The Apple' trong cùng câu đó."
+      ,
+      "NumPy được thiết kế xoay quanh tính toán vector cực mạnh bằng C++, chuyên xử lý với mảng array nhiều chiều (ndarray) với tốc độ nhanh gấp hàng chục lần so với list Python thông thường.",
+      "Series giống như 1 cột, còn DataFrame là cả một bảng gồm nhiều hàng nhiều cột Excel. Đây là hai trái tim làm nên quyền lực của Pandas.",
+      "df['Age'] là cách gọi lấy cột chuẩn mực và an toàn nhất, tránh xung đột thuộc tính so với kiểu gọi dấu chấm df.Age (vì 'Age' có thể trùng với hàm class).",
+      "df.head() in ra mặc định 5 hàng trên cùng để quan sát form mẫu bảng. Gõ df.head(10) sẽ có ngay 10 hàng đầu.",
+      "'i'loc (integer-location) chỉ lấy index bằng số kiểu 0,1,2. Còn loc lấy bằng tên hàng / tên cột (VD: df.loc['A', 'Age']).",
+      "Chẳng hạn lấy mảng M(3x3) cộng số int(5), Numpy ngầm dãn số 5 ra đầy 1 ma trận 3x3 để cộng trơn chu (Broadcasting).",
+      "df.describe() sẽ tung ra thống kê cơ bản rành rọt như số mẫu đếm (count), trung bình trị (mean), độ lệch (std), cận dưới, max...",
+      "np.zeros() hoặc np.ones() rất tiện cho dân làm AI khởi tạo mask mảng bằng số 0/1 theo một shape cấu trúc nhất định cho trước.",
+      "Khác với List của Python x=[1,2,3]*2 sẽ in ra '[1,2,3,1,2,3]', Numpy là Array nên nó sẽ nhân số 2 lên TRỰC TIẾP từng con số bên trong -> [2, 4, 6].",
+      "pd.read_csv('du_lieu.csv') là lệnh kinh điển luôn được gọi đầu tiên bởi các tín đồ Data Analyst để bắt tay phân tích.",
+      "Sức mạnh siêu sạch và nhanh của Numpy đến từ việc nó ép buộc toàn bộ mảng chỉ thuần 1 loại DataType (ví dụ toàn float64 tròn trĩnh), để CPU tính cực nhanh.",
+      "Cách nhanh và thô nhất khi gặp dữ liệu Missing Data (NaN/NaT) là xóa sổ thẳng tay các hàng đó bằng dropna().",
+      "Cú pháp rút gọn nổi đình nổi đám nhất toán học AI là gõ 'A.T' để dựng đứng / nằm lật trục matrix một cách xoay Transpose nhanh chó.",
+      "Gộp nhóm dựa trên Cột A, sau đó áp dụng phép toán tổng aggregate lên Cột B. Giống hệt khái niệm GROUP BY bên SQL Database.",
+      "arange(start, stop_exclusive, step) tạo Array đếm từ 1, nhảy cóc 2 đơn vị, và KHÔNG bao gồm số đích 10. Do đó đáp án là [1, 3, 5, 7, 9].",
+      "fillna() là bảo bối thần kì. Vi dụ df['Cột A'].fillna(df['Cột A'].mean()) sẽ lấp tất cả các ô NaN bằng Giá trị Trung bình của riêng tụi nó.",
+      "Gọi a.shape nó trả về hệ Toạ độ không gian. VD (3, 5) nghĩa là Matrix đó có 3 Rows, 5 Columns.",
+      "Pandas cho phép truyền một mảng Bool điều kiện vào trong ngặc vuông [Condition] giống hệt xài cái Lưới Trải rây để hứng các dữ liệu thõa mãn.",
+      "Nhân Ma Trận theo đúng chuẩn môn Đại Số cực quan trọng cho việc truyền thẳng Layer của AI. (Khác với phép A * B, vốn dĩ sẽ nhân tương ứng tại chỗ Element-wise).",
+      "Merge = Phép JOIN logic. (VD Bảng A nhân sự ghép bảng B Lương dùng chung ID). Còn Concat là cưa đứt dán hồ ghép băng keo các dataframe lên xuống với nhau.",
+      "Khi Train model, gọi seed(như 42 hoặc 0) thì dù cho bạn random kiểu gì, bạn và tôi trên 2 máy tính khác nhau cũng sẽ random ra đúng một loạt list số trùng vắn tắt nhau y sì cho tính công khai.",
+      "apply() mạnh và chuyên trị việc gọi Lambda Function đi len lỏi qua từng record trên dòng thời gian dọc hoặc theo cột dọc rất mềm dẻo.",
+      "Nhớ kỹ luật bò ngang dọc Data: Axis=0 (Index / dọc), Axis=1 (Columns / trượt ngang). VD: drop(axis=1) là cắt ném nguyên Cột.",
+      "Lấy từ đuôi: vị trí cuối số -1, áp chót số -2. Dạng Slicing này kế thừa tự hào từ Python thuần và rất hữu ích khi cắt Chuỗi.",
+      "ascending=True (mặc định) là tăng tiến. Cài False nghĩa là xếp giảm dần xuống dốc, cái nào khổng lồ to cao đặt lên Row Top trên cùng.",
+      "Ví dụ siêu ứng dụng np.where(arr > 10, 'Tốt', 'Xấu' ). Dò trượt cả mảng, những giá trị lớn hơn 10 thì nhét thẻ Tốt, nếu không thẻ Xấu.",
+      "Gặp cột Giới Tính, gõ nunique() thì nó in ra màn hình trả số 2 (vì dù có 1 vạn dòng thì rốt cuộc cũng chỉ có 2 nhóm Nam, Nữ khác biệt duy nhất).",
+      "Pandas thường không modify df ban đầu mà tạo bản sao phái sinh nhằm cho an toàn. Bật inplace=True là ép buộc Sửa luôn cái nguyên gốc cũ cho gọn RAM.",
+      "Numpy ndarray ép các số phải ở liền kề sít sao nhau trong thanh ghi RAM (chuẩn ngôn ngữ C), điều này làm CPU L1 L2 Cache chạy tính như vũ bão ngàn nhịp.",
+      "Sau khi Lọc (Filter) dữ liệu, các STT Index thường bị xé nát lộn xộn nhảy cóc (vd: 1,4,5,10) chứ không tuyến tính. reset_index giúp giặt chải lại vuốt mịn từ 0,1,2,3,4..."
+,
+      "Hàm tuyến tính f(x)=x. Nếu qua 100 lớp tuyến tính thì A(B(C(x))) rốt cuộc về mặt toán học cũng chỉ là f(x) = W*x. Nó không có tính 'Phi tuyến' (Non-linear) để học biểu diễn phức tạp uốn lượn cong.",
+      "Regression cần dự đoán 1 con số liên tục chạy tới vô cực (vd 2 tỷ rưỡi). Nên lớp cuối xài Linear là chuẩn xác nhất để xuất ra con số trần trụi. Còn Softmax/Sigmoid chỉ khoanh số từ 0->1.",
+      "Với ReLU(x) = max(0,x). Khi qua update rủi ro bias/w lôi x về phần Âm. Nơ ron ra số 0 -> Đạo hàm truyền lại ra 0 -> Không bao giờ học luật update nữa. Nơ ron đó chết vĩnh biệt.",
+      "Thay vì Cắt cứng về 0 phẳng lỳ như ReLU truyền thống khi bị âm. Leaky ReLU truyền 1 cái dốc cực thoai thoải để gradient không rớt xuống 'điểm mù chân không' con số 0 kéo dài lên mãi mạng truyền ngược.",
+      "Hàm ReLU có cái GÓC NHỌN kệnh cỡm bẻ gãy ở điểm 0 làm đạo hàm tại mốc 0 đó không tồn tại. Swish bo cong tròn mịn cái góc khủy tay đó, tạo ra vùng đạo hàm mềm mượt hội tụ ổn định hơn trên mặt bằng đồ thị hàm Loss.",
+      "Softmax tính mũ tự nhiên e^x. Nếu input x=1000, e^1000 to tới mức biến Python hay RAM C++ sẽ báo ngay Inifinity / Overflow lỗi tràn số crash liền. Nên người kỹ sư hay trừ cái input z cho Max(z) trước khi nhét vô khối exp() của Softmax.",
+      "Thay vì dùng cụt ngủn 1 hàm non-linear thiết lập sẵn cụ thể (như ReLU), Maxout cho bộ óc AI mô hình AI này Tự động học luôn cả hình thù Hàm Activation ưu việt nhất bằng cách gom chung và lấy phép gộp Max. Tuy vậy, nó cũng làm số lượng Parameter ngốn cực gấp bội x lần.",
+      "Mặt toán học Tanh và Sigmoid là hai anh em sinh đôi đường cong hình chữ S cong mềm tiệm cận asymptote. Ưu điểm Tanh đánh bại Sigmoid là Tanh giải được định điểm Centered At Zero (Trung bình hướng là mốc gốc tọa độ 0) để không làm mô hình bị Bias lẳng lặng đẩy liên hoàn lên giá trị luôn luôn số Dương khùng điên.",
+      "ELU giữ lại cái hay của ReLU: đó là nhánh nửa dương chéo tuyến tính lên mây của x, nhưng thay vì góc gập hoặc đoạn xiên cứng, phần đuôi nhánh âm của x được vuốt cong mềm xéo quy luật hàm mũ e (rẻ bão hòa -a). Điều này khử sóng ồn Gradient chập chờn tốt lắm.",
+      "Tác dụng cốt yếu của 'GATINGS' (cái Cổng chắn cửa nơ ron) là giữ bộ lọc Rây lược thông tin chữ viết. Sigmoid có khả năng quy tính ra % từ 0(nhân đồ với 0 là ném bỏ kí ức rác) đến 1(nhân đồ với 1 là nhớ 100% giữ nguyên y hệt kí ức giá trị) chính là công cụ nhân lọc độ rỗng van quá tuyệt trần."
+    ];
+
+    const form = document.getElementById("quizForm");
+
+    quizData.forEach((item, index) => {
+      // Đóng gói các lựa chọn cùng với thông tin về đáp án đúng
+      let mappedOptions = item.options.map((opt, i) => ({ text: opt, isCorrect: i === item.answer }));
+
+      // Thuật toán xáo trộn ngẫu nhiên (Fisher-Yates Shuffle)
+      for (let i = mappedOptions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [mappedOptions[i], mappedOptions[j]] = [mappedOptions[j], mappedOptions[i]];
+      }
+
+      // Áp dụng vị trí đã xáo trộn trở lại dữ liệu câu hỏi
+      item.options = mappedOptions.map(m => m.text);
+      item.answer = mappedOptions.findIndex(m => m.isCorrect);
+
+      const div = document.createElement("div");
+      div.className = "question";
+
+      let html = "<b>" + item.q + "</b><div class='options'>";
+
+      item.options.forEach((opt, i) => {
+        html += `<label><input type="radio" name="q${index}" value="${i}"> <span class="opt-text">${opt}</span></label>`;
+      });
+
+      html += "</div>";
+      html += `<div class="feedback" style="margin-top: 15px; font-size: 15px; display: none; padding: 10px; border-radius: 5px; background-color: #f8f9fa;"></div>`;
+      div.innerHTML = html;
+      form.appendChild(div);
+    });
+
+    form.addEventListener('change', function (e) {
+      if (e.target.type === 'radio') {
+        const questionIndex = parseInt(e.target.name.substring(1));
+        const selectedAnswer = parseInt(e.target.value);
+        const item = quizData[questionIndex];
+
+        const questionDiv = e.target.closest('.question');
+        const inputs = questionDiv.querySelectorAll('input');
+        const labels = questionDiv.querySelectorAll('label');
+        const feedbackDiv = questionDiv.querySelector('.feedback');
+
+        // Check if correct
+        const isCorrect = selectedAnswer === item.answer;
+
+        // Highlight items
+        labels.forEach((label, i) => {
+          const input = label.querySelector('input');
+          const textSpan = label.querySelector('.opt-text');
+
+          // Disable radio buttons so user can't pick again
+          input.disabled = true;
+
+          if (i === item.answer) {
+            textSpan.style.color = 'green';
+            textSpan.style.fontWeight = 'bold';
+          } else if (i === selectedAnswer && !isCorrect) {
+            textSpan.style.color = 'red';
+            textSpan.style.textDecoration = 'line-through';
+          } else {
+            textSpan.style.color = '#888';
+          }
+        });
+
+        // Provide feedback
+        const explanationText = explanations[questionIndex] || `Đáp án đúng là: ${item.options[item.answer]}`;
+        feedbackDiv.style.display = 'block';
+
+        if (isCorrect) {
+          feedbackDiv.style.borderLeft = "4px solid green";
+          feedbackDiv.innerHTML = `<div style="color:green; font-weight:bold; margin-bottom: 5px;">✅ Chính xác!</div>${explanationText}`;
+        } else {
+          feedbackDiv.style.borderLeft = "4px solid red";
+          feedbackDiv.innerHTML = `<div style="color:red; font-weight:bold; margin-bottom: 5px;">❌ Sai rồi. Đáp án đúng là: ${item.options[item.answer]}</div>${explanationText}`;
+        }
+      }
+    });
+
+    function submitQuiz() {
+      let score = 0;
+      let attempts = 0;
+
+      quizData.forEach((item, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        if (selected) {
+          attempts++;
+          if (parseInt(selected.value) === item.answer) {
+            score++;
+          }
+        }
+      });
+
+      let output = `Bạn đã trả lời đúng ${score} / ${quizData.length} câu.`;
+      if (attempts < quizData.length) {
+        output += ` (Bạn mới làm ${attempts} câu)`;
+      }
+
+      const resultDiv = document.getElementById("result");
+      resultDiv.innerText = output;
+      resultDiv.style.color = score === quizData.length ? "green" : "#333";
+
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+  </script>
+
+</body>
+
+</html>

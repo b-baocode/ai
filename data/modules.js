@@ -1,0 +1,76 @@
+// Cấu trúc 4 module. Bài học nằm trong data/lessons/*.js (gắn qua lesson.topic).
+// exam: số câu trắc nghiệm / câu mở khi thi thử, theo blueprint bộ N26.
+window.MODULES = [
+  {
+    id: 'A',
+    name: 'Nền tảng Toán học & Tư duy Định lượng',
+    desc: 'Xác suất, ma trận, các phép tính nền tảng. Đề tập trung xác suất + ma trận, tính được bằng giấy nháp.',
+    minutes: 20,
+    exam: { mcq: 19, open: 1 },
+    topics: [
+      { id: 'A0', title: 'Nền tảng tính toán' },
+      { id: 'A1', title: 'Thống kê mô tả & suy luận' },
+      { id: 'A2', title: 'Xác suất' },
+      { id: 'A3', title: 'Tổ hợp, đếm & toán rời rạc' },
+      { id: 'A4', title: 'Vector & ma trận' },
+      { id: 'A5', title: 'Đạo hàm & gradient' },
+      { id: 'A6', title: 'Tư duy định lượng' },
+    ],
+  },
+  {
+    id: 'B',
+    name: 'Kỹ thuật Lập trình & Xử lý dữ liệu',
+    desc: 'Python, đọc code, NumPy, Pandas, gọi API với requests, thuật toán Euclid.',
+    minutes: 25,
+    exam: { mcq: 18, open: 2 },
+    topics: [
+      { id: 'B0', title: 'Python từ số 0' },
+      { id: 'B1', title: 'Cấu trúc dữ liệu Python' },
+      { id: 'B2', title: 'Chuỗi, comprehension & hàm' },
+      { id: 'B3', title: 'Thuật toán, Big-O & Euclid' },
+      { id: 'B4', title: 'NumPy' },
+      { id: 'B5', title: 'Pandas' },
+      { id: 'B6', title: 'Làm sạch dữ liệu & SQL' },
+      { id: 'B7', title: 'API, HTTP, JSON với requests' },
+      { id: 'B8', title: 'Luyện bài code tự luận' },
+      { id: 'B9', title: 'Kỹ thuật phần mềm' },
+    ],
+  },
+  {
+    id: 'C',
+    name: 'Kiến thức AI & Tư duy sản phẩm AI',
+    desc: 'ML cơ bản, metrics, neural network, NLP, LLM/RAG, triển khai và vận hành sản phẩm AI.',
+    minutes: 25,
+    exam: { mcq: 9, open: 3 },
+    topics: [
+      { id: 'C0', title: 'Bản đồ AI & các loại bài toán' },
+      { id: 'C1', title: 'Quy trình ML & dữ liệu cho AI' },
+      { id: 'C2', title: 'Các mô hình cổ điển (kể cả SVM)' },
+      { id: 'C3', title: 'Đánh giá mô hình & metrics' },
+      { id: 'C4', title: 'Overfitting & regularization' },
+      { id: 'C5', title: 'Neural network & backprop' },
+      { id: 'C6', title: 'CNN / RNN / Transformer' },
+      { id: 'C7', title: 'NLP & Embedding' },
+      { id: 'C8', title: 'LLM, RAG, agent & LLM engineering' },
+      { id: 'C9', title: 'Tư duy sản phẩm AI' },
+      { id: 'C10', title: 'Triển khai, hạ tầng dữ liệu & vận hành' },
+      { id: 'C11', title: 'Mở rộng (ít khả năng ra thi)' },
+    ],
+  },
+  {
+    id: 'D',
+    name: 'Tư duy Logic, Đạo đức & Hành vi',
+    desc: 'Logic mệnh đề, quyền riêng tư dữ liệu, AI có trách nhiệm, giao tiếp nghề nghiệp.',
+    minutes: 20,
+    exam: { mcq: 7, open: 1 },
+    topics: [
+      { id: 'D1', title: 'Logic & suy luận' },
+      { id: 'D2', title: 'Phân tích nguyên nhân & phản biện' },
+      { id: 'D3', title: 'Quyền riêng tư & bảo vệ dữ liệu' },
+      { id: 'D4', title: 'AI có trách nhiệm' },
+      { id: 'D5', title: 'Hành vi & giao tiếp nghề nghiệp' },
+    ],
+  },
+];
+
+window.LESSONS = window.LESSONS || [];

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ôn thi AI</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="(prefers-color-scheme: light)">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="(prefers-color-scheme: dark)">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn" id="menuBtn" aria-label="Mở/đóng mục lục" aria-controls="sidebar">☰</button>
+      <a class="brand" href="#/">🎓 <span>Ôn thi AI</span></a>
+      <nav class="nav">
+        <a href="#/" data-page="home">Học</a>
+        <a href="#/plan" data-page="plan">Kế hoạch</a>
+        <a href="#/practice" data-page="practice">Luyện tập</a>
+        <a href="#/exam" data-page="exam">Thi thử</a>
+        <a href="#/formulas" data-page="formulas">Công thức</a>
+        <a href="#/wrong" data-page="wrong">Câu sai</a>
+      </nav>
+      <button class="icon-btn" id="themeBtn" aria-label="Đổi giao diện sáng/tối">◐</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside id="sidebar" aria-label="Mục lục bài học"></aside>
+    <main id="app"><div class="empty">Đang tải…</div></main>
+  </div>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <footer class="site">
+    Câu hỏi luyện tập lấy từ <a href="https://github.com/HungBil/AI-TEST" target="_blank" rel="noopener">HungBil/AI-TEST</a> (MIT © 2026 Henry Don) — đề cương ôn tập cộng đồng, <b>không phải đề thi chính thức</b>.
+    Thêm câu từ bộ quiz ML/DL cá nhân. Khung chủ đề tham khảo từ ghi chú Notion "Exam prep". Tiến độ lưu trên trình duyệt của bạn.
+  </footer>
+
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script defer src="data/modules.js"></script>
+  <script defer src="data/questions.js"></script>
+  <script defer src="data/questions-extra.js"></script>
+  <script defer src="data/extra/A.js"></script>
+  <script defer src="data/extra/B.js"></script>
+  <script defer src="data/extra/C.js"></script>
+  <script defer src="data/extra/D.js"></script>
+  <script defer src="data/extra/feedback-1012.js"></script>
+  <script defer src="data/extra/audit-1013.js"></script>
+  <script defer src="data/lessons/A.js"></script>
+  <script defer src="data/lessons/B.js"></script>
+  <script defer src="data/lessons/C.js"></script>
+  <script defer src="data/lessons/D.js"></script>
+  <script defer src="data/formulas.js"></script>
+  <script defer src="data/plan.js"></script>
+  <script defer src="data/glossary.js"></script>
+  <script defer src="data/videos.js"></script>
+  <script defer src="assets/exam-sets.js"></script>
+  <script defer src="assets/app.js"></script>
+</body>
+</html>
