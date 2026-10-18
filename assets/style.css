@@ -652,3 +652,19 @@ body.sidebar-collapsed #sidebar { display: none; }
 .videos { margin: 18px 0; }
 .videos ul { margin: 0 0 8px; padding-left: 0; list-style: none; }
 .videos li { margin: 7px 0; overflow-wrap: anywhere; }
+
+/* Kiến thức thêm cho từng câu (data/qnotes.js) */
+.qnote { margin-top: 10px; padding: 10px 14px; border-left: 4px solid var(--primary); border-radius: 8px; background: var(--primary-soft); font-size: .95em; }
+.qnote .title { font-weight: 700; margin-bottom: 4px; }
+.qnote ul { margin: 6px 0; padding-left: 18px; }
+
+/* Mẹo làm bài dưới lời giải (data/tips.js) */
+.qtip { margin-top: 10px; padding: 10px 14px; border-left: 4px solid var(--warn); border-radius: 8px; background: var(--warn-soft); font-size: .95em; }
+.qtip .title { font-weight: 700; margin-bottom: 4px; }
+.qtip-item + .qtip-item { margin-top: 8px; }
+
+/* Học nhanh (#/l/<id>/review): đáp án hiện sẵn, giải thích mở bằng nút */
+.review-q { margin: 12px 0; }
+.review-q .q-prompt { margin: 6px 0 4px; }
+.review-more { margin-top: 10px; }
+.review-more > summary { cursor: pointer; font-weight: 700; color: var(--primary); padding: 6px 0; }

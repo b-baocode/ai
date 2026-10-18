@@ -1,6 +1,144 @@
 // Bài học Module C — Kiến thức AI & Tư duy sản phẩm AI.
 window.LESSONS = (window.LESSONS || []).concat([
 
+// ======================= MẸO NHỚ NHANH (đọc trước giờ thi) =======================
+{
+  id: 'CS.1', module: 'C', topic: 'CE', minutes: 20,
+  title: 'Mẹo nhớ nhanh trước giờ thi (bảng tóm tắt + kế hoạch ôn cấp tốc)',
+  skills: [],
+  // Bài tổng hợp: người dùng yêu cầu đưa bảng mẹo nhớ thành một mục ở Module C (18/10). Luyện = 33 câu của CM.1.
+  questionIds: ["TS-ts.tips-quiz-1","TS-ts.tips-quiz-2","TS-ts.tips-quiz-3","TS-ts.tips-quiz-4","TS-ts.tips-quiz-5","TS-ts.tips-quiz-6","TS-ts.tips-quiz-7","TS-ts.tips-quiz-8","TS-ts.tips-quiz-9","TS-ts.tips-quiz-10","TS-ts.tips-quiz-11","TS-ts.tips-quiz-12","TS-ts.tips-quiz-13","TS-ts.tips-quiz-14","TS-ts.tips-quiz-15","TS-ts.tips-quiz-16","TS-ts.tips-quiz-17","TS-ts.tips-quiz-18","TS-ts.tips-quiz-19","TS-ts.tips-quiz-20","TS-ts.tips-quiz-21","TS-ts.tips-quiz-22","TS-ts.tips-quiz-23","TS-ts.tips-quiz-24","TS-ts.tips-quiz-25","TS-ts.tips-quiz-26","TS-ts.tips-quiz-27","TS-ts.tips-quiz-28","TS-ts.tips-quiz-29","TS-ts.tips-quiz-30","TS-ts.tips-quiz-31","TS-ts.tips-quiz-32","TS-ts.tips-quiz-33"],
+  content: String.raw`
+<div class="box why"><span class="box-title">🎯 Dùng bài này thế nào?</span>
+Bảng tóm tắt để đọc <b>ngay trước giờ thi</b>. Đọc to từng dòng, che phần sau dấu "→" rồi tự nói lại. Cuối trang có nút luyện 33 câu áp dụng đúng các mẹo này (cùng bộ câu với bài <a href="#/l/CM.1">CM.1</a>).</div>
+
+<h2>Kế hoạch ôn cấp tốc (khoảng 60–75 phút)</h2>
+<ol class="steps">
+<li><b>Đọc bảng mẹo nhớ</b> bên dưới (20 phút). Đọc to, tự che đáp án rồi nói lại.</li>
+<li><b>Ôn 3 câu tự luận lớn</b> (khoảng 24 điểm). Mỗi bài chỉ đọc phần "khung trả lời" (20 phút):
+<ul><li><a href="#/l/C3.1">C3.1</a>: công thức metrics.</li><li><a href="#/l/C8.2">C8.2</a>: hai khung RAG.</li><li><a href="#/l/D5.1">D5.1</a>: khung góp ý senior.</li></ul></li>
+<li><b>Lướt bài <a href="#/l/A5.2">A5.2</a></b> (10 phút): 3 công thức gradient.</li>
+<li><b>Đi ngủ.</b> Sáng dậy đọc lại bảng mẹo một lần (10 phút).</li>
+</ol>
+
+<h2>1. Loại bài toán</h2>
+<ul>
+<li>Có nhãn là <b>có giám sát</b>: đáp án là nhãn → <b>phân loại</b>; đáp án là con số → <b>hồi quy</b>.</li>
+<li>Không nhãn, gom nhóm → <b>phân cụm</b> (k-means).</li>
+<li>Thử và nhận thưởng → <b>học tăng cường</b>.</li>
+</ul>
+
+<h2>2. Overfitting và underfitting</h2>
+<ul>
+<li>Train cao, test thấp → <b>overfitting</b>. Chữa bằng: thêm dữ liệu, regularization (L1/L2), dropout, early stopping, model đơn giản hơn.</li>
+<li>Train thấp, test cũng thấp → <b>underfitting</b>. Chữa bằng model phức tạp hơn.</li>
+<li>Phân biệt: <b>L1</b> đẩy trọng số về 0 (chọn đặc trưng); <b>L2</b> làm trọng số nhỏ đều.</li>
+</ul>
+
+<h2>3. Metrics (thuộc lòng)</h2>
+$$\text{Precision} = \frac{TP}{TP + FP}$$
+$$\text{Recall} = \frac{TP}{TP + FN}$$
+$$F1 = \frac{2PR}{P + R}$$
+<ul>
+<li><b>Báo nhầm đắt</b> → ưu tiên <b>precision</b> (lọc spam).</li>
+<li><b>Bỏ sót đắt</b> → ưu tiên <b>recall</b> (ung thư, gian lận).</li>
+<li>Dữ liệu lệch lớp → <b>không tin accuracy</b>.</li>
+<li><b>Nâng ngưỡng</b> → precision tăng, recall giảm.</li>
+</ul>
+
+<h2>4. Mạng nơ-ron</h2>
+<ul>
+<li><b>ReLU</b> = max(0, z); <b>sigmoid</b> ra (0, 1); <b>softmax</b> ra các xác suất có tổng bằng 1.</li>
+<li>Cập nhật: <b>w mới = w − η × gradient</b> (gradient âm thì w tăng).</li>
+<li>Learning rate quá lớn → loss dao động, không hội tụ.</li>
+<li>Vanishing gradient → dùng ReLU, LSTM, ResNet. Exploding gradient → gradient clipping.</li>
+<li><b>CNN</b> cho ảnh; <b>RNN, LSTM</b> cho chuỗi; <b>Transformer</b> dùng self-attention, xử lý song song (nền tảng của LLM).</li>
+</ul>
+
+<h2>5. LLM và RAG</h2>
+<ul>
+<li><b>RAG</b> = tìm tài liệu rồi đưa vào prompt; dùng khi kiến thức hay thay đổi và cần trích nguồn.</li>
+<li><b>Fine-tune</b> = đổi giọng văn, định dạng; cần nhiều ví dụ và GPU.</li>
+<li>Thứ tự thử: <b>sửa prompt → RAG → fine-tune</b>.</li>
+<li><b>Hallucination</b> = bịa. Giảm bằng RAG, trích nguồn, cho phép trả lời "không biết", temperature thấp.</li>
+<li><b>Embedding</b> = biến văn bản thành vector; cosine similarity gần 1 là cùng nghĩa.</li>
+</ul>
+
+<h2>6. Mẹo làm bài trắc nghiệm</h2>
+<ul>
+<li><b>Loại lựa chọn lạc đề:</b> câu hỏi về bảo mật mà lựa chọn nói "tăng epoch", "batch size" → loại ngay.</li>
+<li><b>Đạo đức, triển khai:</b> chọn phương án an toàn, có kiểm soát, có người duyệt, có log. Loại các phương án "nhanh nhưng liều" (dùng hết dữ liệu, xóa log, để AI tự quyết hoàn toàn).</li>
+<li><b>Chữ tuyệt đối:</b> lựa chọn có "luôn", "không bao giờ", "tất cả" thường sai.</li>
+<li><b>Phân bổ thời gian:</b> làm trắc nghiệm nhanh, chừa khoảng 25–30 phút cho các câu tự luận (3 câu Module C nặng điểm nhất). Viết theo khung, có ý là có điểm.</li>
+</ul>
+<div class="box tip"><span class="box-title">🍀 Chúc bạn thi tốt!</span>Ngủ đủ giúp não giữ lại những gì vừa ôn, quan trọng hơn thức thêm một giờ.</div>
+`},
+
+// ======================= ÔN ĐỀ E01–E10 (làm đầu tiên) =======================
+{
+  id: 'CE.1', module: 'C', topic: 'CE', minutes: 30,
+  title: 'Ôn đề: toàn bộ 29 câu Module C bộ AI-TEST E01–E10',
+  skills: [],
+  // Bài tổng hợp: mọi câu Module C nguồn aitest-e (người dùng yêu cầu 18/10, đặt đầu module).
+  questionIds: ["E01-C01","E01-C02","E01-C03","E01-C04","E01-C05","E01-C06","E01-C07","E01-C08","E01-C09","E01-C10","E01-C11","E01-C12","E01-C13","E01-C14","E01-C15","E01-C16","E01-C17","E01-C18","E01-C19","E01-C20","E02-C17","E02-C18","E02-C19","E02-C20","E03-C17","E03-C18","E03-C20","E04-C17","E04-C18"],
+  content: String.raw`
+
+<div class="box why"><span class="box-title">🎯 Bài này là gì?</span>
+Toàn bộ <b>29 câu Module C của bộ AI-TEST E01–E10</b> (24 trắc nghiệm, 5 tự luận), gom lại để ôn đề trước khi vào bài học. Đây là đề cộng đồng, không phải đề chính thức. Bấm <b>"Làm toàn bộ"</b> ở cuối trang để làm hết; mỗi câu sau khi trả lời có lời giải gốc, <b>📚 Kiến thức thêm</b> (giải thích sâu hơn, vì sao các lựa chọn khác sai) và bảng thuật ngữ.</div>
+<div class="box idea"><span class="box-title">💡 Cách dùng</span>
+<ol><li>Làm toàn bộ trước, chưa cần đọc bài.</li><li>Đọc kỹ kiến thức thêm ở những câu sai.</li><li>Xem bảng "Theo từng dạng" sau khi nộp: dạng nào dưới 50% thì mở bài học tương ứng.</li></ol></div>
+<h2>Các câu thuộc bài nào</h2>
+<p><a href="#/l/C0.1">C0.1</a> (2), <a href="#/l/C1.1">C1.1</a> (2), <a href="#/l/C4.1">C4.1</a> (1), <a href="#/l/C3.2">C3.2</a> (1), <a href="#/l/C9.1">C9.1</a> (10), <a href="#/l/C10.1">C10.1</a> (2), <a href="#/l/C8.2">C8.2</a> (5), <a href="#/l/C7.1">C7.1</a> (1), <a href="#/l/C8.1">C8.1</a> (5)</p>
+<p class="small muted">Nguồn: <a href="https://github.com/HungBil/AI-TEST" target="_blank" rel="noopener">HungBil/AI-TEST</a> (MIT © 2026 Henry Don).</p>
+`},
+
+
+// ======================= BỘ ĐỀ LUYỆN MẸO =======================
+{
+  id: 'CM.1', module: 'C', topic: 'CE', minutes: 30,
+  title: 'Bộ đề luyện mẹo làm bài: 33 câu giải bằng mẹo (kèm bảng mẹo)',
+  skills: ['ts.tips-quiz'],
+  content: String.raw`
+
+<div class="box why"><span class="box-title">🎯 Bài này là gì?</span>
+Bộ đề <b>33 câu</b>, mỗi câu được soạn để giải bằng <b>một mẹo</b> trong bảng dưới đây. Chọn đáp án xong sẽ hiện lời giải, khung <b>💡 Mẹo áp dụng</b> cho câu đó, và kiến thức thêm nếu có. Đọc lướt bảng mẹo 10 phút, rồi bấm <b>"Làm toàn bộ"</b> ở cuối trang. Mẹo cũng tự hiện ở bài ôn đề CE.1, bài câu tự soạn CT.1 và các câu cùng dạng khác.</div>
+<h2>Kiến thức ML</h2>
+<table>
+<tr><th>Mẹo</th><th>Nội dung</th></tr>
+<tr><td><b>Nhận dạng loại bài toán</b></td><td>Có nhãn → <b>có giám sát</b>: đáp án là nhãn → <b>phân loại</b>; đáp án là con số → <b>hồi quy</b>.<br>Không có nhãn, muốn gom nhóm → <b>phân cụm</b> (k-means).<br>Thử hành động, nhận thưởng/phạt → <b>học tăng cường</b>.</td></tr>
+<tr><td><b>Overfitting hay underfitting</b></td><td>Train <b>cao</b>, test <b>thấp</b> → <b>overfitting</b> (học vẹt). Chữa: thêm dữ liệu, regularization, dropout, early stopping, model đơn giản hơn.<br>Train <b>thấp</b>, test cũng <b>thấp</b> → <b>underfitting</b>. Chữa: model phức tạp hơn, thêm đặc trưng, train lâu hơn.</td></tr>
+<tr><td><b>L1 khác L2</b></td><td><b>L1</b> đẩy nhiều trọng số về <b>đúng 0</b> (tự chọn đặc trưng).<br><b>L2</b> làm các trọng số <b>nhỏ đều</b>, hiếm khi bằng 0.<br>Cả hai đều là regularization để giảm overfitting.</td></tr>
+<tr><td><b>Precision hay recall</b></td><td>Precision = TP/(TP+FP); recall = TP/(TP+FN); F1 = 2PR/(P+R).<br><b>Báo nhầm đắt</b> (chặn nhầm email, khóa nhầm tài khoản) → ưu tiên <b>precision</b>.<br><b>Bỏ sót đắt</b> (ung thư, gian lận) → ưu tiên <b>recall</b>.</td></tr>
+<tr><td><b>Dữ liệu lệch lớp</b></td><td>Một lớp chiếm áp đảo (99% bình thường) → <b>không tin accuracy</b>: đoán "bình thường" cho tất cả vẫn được 99%.<br>Xem precision, recall, F1, PR-AUC của <b>lớp hiếm</b>.</td></tr>
+<tr><td><b>Đổi ngưỡng quyết định</b></td><td><b>Nâng ngưỡng</b> → ít báo dương hơn → <b>precision tăng, recall giảm</b>.<br><b>Hạ ngưỡng</b> → ngược lại. Đổi ngưỡng không cần huấn luyện lại model.</td></tr>
+</table>
+<h2>Mạng nơ-ron</h2>
+<table>
+<tr><th>Mẹo</th><th>Nội dung</th></tr>
+<tr><td><b>Hàm kích hoạt</b></td><td><b>ReLU</b> = max(0, z): số âm thành 0, dùng cho lớp ẩn.<br><b>Sigmoid</b> ra khoảng (0, 1): phân loại nhị phân.<br><b>Softmax</b> ra các xác suất dương có <b>tổng bằng 1</b>: phân loại nhiều lớp.</td></tr>
+<tr><td><b>Công thức gradient descent</b></td><td><b>w mới = w − η × gradient</b> (η là learning rate).<br>Gradient <b>dương</b> → w <b>giảm</b>; gradient <b>âm</b> → trừ số âm là cộng → w <b>tăng</b>.<br>Một nơ-ron ŷ = wx, loss ½(ŷ − y)²: <b>dL/dw = (ŷ − y) × x</b>.</td></tr>
+<tr><td><b>Learning rate</b></td><td><b>Quá lớn</b> → loss dao động hoặc tăng vọt, <b>không hội tụ</b>.<br><b>Quá nhỏ</b> → học rất chậm.</td></tr>
+<tr><td><b>Vanishing và exploding gradient</b></td><td><b>Vanishing</b> (gradient nhỏ dần về 0 ở mạng sâu, RNN) → dùng ReLU, LSTM/GRU, ResNet.<br><b>Exploding</b> (gradient phình to, loss thành NaN) → <b>gradient clipping</b>.</td></tr>
+<tr><td><b>Chọn kiến trúc mạng</b></td><td><b>CNN</b> cho <b>ảnh</b>. <b>RNN/LSTM</b> cho <b>chuỗi</b> (văn bản, chuỗi thời gian).<br><b>Transformer</b> dùng <b>self-attention</b>, xử lý song song cả câu, là nền tảng của LLM.</td></tr>
+</table>
+<h2>LLM và RAG</h2>
+<table>
+<tr><th>Mẹo</th><th>Nội dung</th></tr>
+<tr><td><b>RAG hay fine-tune</b></td><td><b>RAG</b> = tìm tài liệu rồi đưa vào prompt: hợp khi <b>kiến thức hay thay đổi</b> và <b>cần trích nguồn</b>.<br><b>Fine-tune</b> = đổi <b>giọng văn, định dạng, hành vi</b>: cần nhiều ví dụ và GPU.<br>Thứ tự thử: <b>sửa prompt → RAG → fine-tune</b> (rẻ tới đắt).</td></tr>
+<tr><td><b>Giảm hallucination</b></td><td>LLM bịa vì nó sinh chữ "nghe hợp lý nhất", không kiểm chứng sự thật.<br>Giảm bằng: <b>RAG + trích nguồn</b>, cho phép trả lời <b>"không biết"</b>, <b>temperature thấp</b>, người duyệt câu quan trọng.<br>Tăng temperature hay đổi sang model nhỏ <b>không</b> giúp giảm bịa.</td></tr>
+<tr><td><b>Embedding và cosine</b></td><td><b>Embedding</b> = biến văn bản/ảnh thành <b>vector số</b>; nghĩa gần → vector gần.<br><b>Cosine similarity</b> đo góc: <b>gần 1 là cùng nghĩa</b>, gần 0 là không liên quan. Cosine chỉ xét hướng, không xét độ dài.</td></tr>
+</table>
+<h2>Kỹ năng làm bài</h2>
+<table>
+<tr><th>Mẹo</th><th>Nội dung</th></tr>
+<tr><td><b>Loại lựa chọn lạc đề</b></td><td>Lựa chọn thuộc <b>lĩnh vực khác hẳn</b> câu hỏi thì loại ngay. Ví dụ câu về bảo mật, sản phẩm hay quy trình mà lựa chọn nói "tăng epoch", "batch size", "mua GPU", "đổi font", "tăng temperature".<br>Thường loại được 2–3 lựa chọn mà không cần hiểu sâu thuật ngữ.</td></tr>
+<tr><td><b>Chọn phương án an toàn</b></td><td>Câu đạo đức, triển khai, xử lý sự cố: chọn phương án <b>an toàn, có kiểm soát, có người duyệt, có log, đúng mục đích</b>.<br>Loại phương án "nhanh nhưng liều": dùng hết dữ liệu, xóa log, giấu bằng giao diện, dặn LLM bằng prompt thay vì kiểm tra quyền thật, để AI tự quyết hoàn toàn.</td></tr>
+<tr><td><b>Cẩn thận với chữ tuyệt đối</b></td><td>Lựa chọn có <b>"luôn", "không bao giờ", "tất cả", "hoàn toàn", "chắc chắn"</b> thường <b>sai</b>, vì trong AI hầu như mọi thứ đều có đánh đổi.<br>Đáp án đúng hay dùng chữ mềm: "thường", "có thể", "tùy", "đánh đổi".</td></tr>
+</table>
+<div class="box tip"><span class="box-title">✍️ Khi vào phòng thi</span>
+Làm trắc nghiệm nhanh, gặp câu lạ thì <b>loại lựa chọn lạc đề và lựa chọn có chữ tuyệt đối trước</b>. Chừa khoảng 25–30 phút cho các câu tự luận; viết theo khung, có ý là có điểm.</div>
+`},
+
 // ======================= C0 BẢN ĐỒ AI =======================
 {
   id: 'C0.1', module: 'C', topic: 'C0', minutes: 15,
@@ -1241,6 +1379,23 @@ Bài này gom các khái niệm <b>nâng cao</b> trong bộ quiz ML/DL của b�
 <li><b>Encoder–decoder (seq2seq)</b>: dịch máy, sinh văn bản. <b>Beam search</b>: giữ top-k chuỗi tốt nhất khi sinh. <b>BLEU</b> chấm dịch máy, <b>ROUGE</b> chấm tóm tắt.</li>
 <li><b>Nén mô hình</b>: quantization (FP32 → INT8, nhỏ và nhanh hơn), pruning (bỏ trọng số ít quan trọng). <b>ONNX/TensorRT</b>: tối ưu khi triển khai.</li>
 </ul>
+`},
+
+// ======================= CÂU TỰ SOẠN (làm sau cùng) =======================
+{
+  id: 'CT.1', module: 'C', topic: 'CT', minutes: 90,
+  title: 'Luyện tổng hợp: toàn bộ 152 câu tự soạn Module C',
+  skills: [],
+  // Bài tổng hợp: mọi câu Module C source tu-soan (người dùng yêu cầu 18/10, đặt cuối module).
+  questionIds: ["TS-c.problem-type-1","TS-c.problem-type-2","TS-c.problem-type-3","TS-c.problem-type-4","TS-c.problem-type-5","TS-c.features-1","TS-c.features-2","TS-c.features-3","TS-c.features-4","TS-c.features-5","TS-c.features-6","TS-ts.data-1","TS-ts.data-10","TS-ts.data-2","TS-ts.data-3","TS-ts.data-4","TS-ts.data-5","TS-ts.data-6","TS-ts.data-7","TS-ts.data-8","TS-ts.data-9","TS-c.models-1","TS-c.models-2","TS-c.models-3","TS-c.models-4","TS-c.models-5","TS-c.models-6","TS-c.models-7","TS-c.models-8","TS-ts.c-models-1","TS-ts.c-models-2","TS-ts.c-svm-1","TS-ts.c-metrics-1","TS-ts.c-metrics-2","TS-ts.c-metrics-3","TS-ts.c-metrics-4","TS-c.metrics-extra-1","TS-c.metrics-extra-2","TS-c.metrics-extra-3","TS-c.metrics-extra-4","TS-c.metrics-extra-5","TS-c.overfit-1","TS-c.overfit-2","TS-c.overfit-3","TS-c.overfit-4","TS-c.overfit-5","TS-c.nn-1","TS-c.nn-2","TS-c.nn-3","TS-c.nn-4","TS-c.nn-5","TS-c.nn-6","TS-c.nn-7","TS-c.nn-8","TS-c.backprop-extra-1","TS-c.backprop-extra-2","TS-c.backprop-extra-3","TS-c.backprop-extra-4","TS-ts.c-training-1","TS-c.arch-1","TS-c.arch-2","TS-c.arch-3","TS-c.arch-4","TS-c.arch-5","TS-c.arch-6","TS-ts.c-arch-1","TS-ts.c-arch-2","TS-c.nlp-1","TS-c.nlp-2","TS-c.nlp-3","TS-c.nlp-4","TS-c.nlp-5","TS-c.nlp-6","TS-c.nlp-7","TS-ts.c-nlp-1","TS-ts.c-nlp-2","TS-c.llm-1","TS-c.llm-2","TS-c.llm-3","TS-c.llm-4","TS-ts.rag-pipeline-1","TS-ts.rag-pipeline-10","TS-ts.rag-pipeline-11","TS-ts.rag-pipeline-12","TS-ts.rag-pipeline-13","TS-ts.rag-pipeline-14","TS-ts.rag-pipeline-15","TS-ts.rag-pipeline-16","TS-ts.rag-pipeline-2","TS-ts.rag-pipeline-3","TS-ts.rag-pipeline-4","TS-ts.rag-pipeline-5","TS-ts.rag-pipeline-6","TS-ts.rag-pipeline-7","TS-ts.rag-pipeline-8","TS-ts.rag-pipeline-9","TS-ts.agent-1","TS-ts.agent-10","TS-ts.agent-11","TS-ts.agent-12","TS-ts.agent-2","TS-ts.agent-3","TS-ts.agent-4","TS-ts.agent-5","TS-ts.agent-6","TS-ts.agent-7","TS-ts.agent-8","TS-ts.agent-9","TS-ts.agent-essay-1","TS-ts.agent-essay-2","TS-ts.llm-eng-1","TS-ts.llm-eng-10","TS-ts.llm-eng-11","TS-ts.llm-eng-12","TS-ts.llm-eng-2","TS-ts.llm-eng-3","TS-ts.llm-eng-4","TS-ts.llm-eng-5","TS-ts.llm-eng-6","TS-ts.llm-eng-7","TS-ts.llm-eng-8","TS-ts.llm-eng-9","TS-ts.deploy-essay-1","TS-ts.deploy-essay-2","TS-ts.deploy-essay-3","TS-ts.ai-business-1","TS-ts.ai-business-10","TS-ts.ai-business-2","TS-ts.ai-business-3","TS-ts.ai-business-4","TS-ts.ai-business-5","TS-ts.ai-business-6","TS-ts.ai-business-7","TS-ts.ai-business-8","TS-ts.ai-business-9","TS-ts.ai-business-essay-1","TS-ts.ai-business-essay-2","TS-c.monitoring-1","TS-c.monitoring-2","TS-c.monitoring-3","TS-c.monitoring-4","TS-ts.infra-1","TS-ts.infra-10","TS-ts.infra-11","TS-ts.infra-2","TS-ts.infra-3","TS-ts.infra-4","TS-ts.infra-5","TS-ts.infra-6","TS-ts.infra-7","TS-ts.infra-8","TS-ts.infra-9"],
+  content: String.raw`
+
+<div class="box why"><span class="box-title">🎯 Bài này là gì?</span>
+Toàn bộ <b>152 câu Module C do người soạn web tự viết</b> (không lấy từ đề nào), để lấp những chỗ bộ đề cộng đồng và quiz ML/DL thiếu. Nên làm <b>sau cùng</b>, sau khi đã ôn đề E01–E10 (bài CE.1) và các bài trọng tâm. 70 câu có thêm <b>📚 Kiến thức thêm</b> dưới lời giải.</div>
+<div class="box trap"><span class="box-title">⚠️ Mức ưu tiên</span>
+Một phần các câu này thuộc những bài <b>chưa có bằng chứng ra đề</b> (C1.3 dữ liệu cho AI, C8.4 LLM engineering, C9.2 AI business, C10.2 hạ tầng dữ liệu). Thiếu thời gian thì làm phần còn lại trước, hoặc dùng "Luyện nhanh".</div>
+<h2>Các câu thuộc bài nào</h2>
+<p><a href="#/l/C0.1">C0.1</a> (5), <a href="#/l/C1.2">C1.2</a> (6), <a href="#/l/C1.3">C1.3</a> (10), <a href="#/l/C2.1">C2.1</a> (10), <a href="#/l/C2.2">C2.2</a> (1), <a href="#/l/C3.1">C3.1</a> (4), <a href="#/l/C3.2">C3.2</a> (5), <a href="#/l/C4.1">C4.1</a> (5), <a href="#/l/C5.1">C5.1</a> (8), <a href="#/l/C5.2">C5.2</a> (5), <a href="#/l/C6.1">C6.1</a> (8), <a href="#/l/C7.1">C7.1</a> (9), <a href="#/l/C8.1">C8.1</a> (4), <a href="#/l/C8.2">C8.2</a> (16), <a href="#/l/C8.3">C8.3</a> (14), <a href="#/l/C8.4">C8.4</a> (12), <a href="#/l/C9.1">C9.1</a> (3), <a href="#/l/C9.2">C9.2</a> (12), <a href="#/l/C10.1">C10.1</a> (4), <a href="#/l/C10.2">C10.2</a> (11)</p>
 `},
 
 ]);

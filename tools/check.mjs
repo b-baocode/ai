@@ -38,6 +38,10 @@ for (const l of LESSONS) {
   lessonIds.add(l.id);
   const mod = MODULES.find(m => m.id === l.module);
   if (!mod || !mod.topics.some(t => t.id === l.topic)) warn('Bài có topic không tồn tại:', l.id, l.topic);
+  if (l.questionIds) {
+    for (const id of l.questionIds) if (!QUESTIONS.some(q => q.id === id)) warn('Bài tổng hợp trỏ tới câu không tồn tại:', l.id, id);
+    if (l.skills.length) warn('Bài tổng hợp không được sở hữu dạng đề:', l.id);
+  }
   for (const s of l.skills) {
     if (skillOwner.has(s)) warn(`Dạng ${s} thuộc 2 bài: ${skillOwner.get(s)} và ${l.id}`);
     skillOwner.set(s, l.id);
@@ -51,7 +55,7 @@ for (const m of MODULES) {
   const orphan = [...new Set(qs.map(q => q.skill))].filter(s => !skillOwner.has(s));
   console.log(`\nModule ${m.id}: ${qs.length} câu (${qs.filter(q => q.source === 'tu-soan').length} tự soạn), ${ls.length} bài`);
   for (const l of ls) {
-    const n = qs.filter(q => l.skills.includes(q.skill));
+    const n = l.questionIds ? QUESTIONS.filter(q => l.questionIds.includes(q.id)) : qs.filter(q => l.skills.includes(q.skill));
     const flag = n.length < 5 ? '  ⚠️ ít câu' : '';
     console.log(`  ${l.id.padEnd(6)} ${String(n.length).padStart(3)} câu (${n.filter(q => q.type !== 'mcq').length} mở)  ${l.title}${flag}`);
   }

@@ -19,7 +19,12 @@
 
   function lessonsOfModule(mid) { return LESSONS.filter(l => l.module === mid); }
   function lessonsOfTopic(tid) { return LESSONS.filter(l => l.topic === tid); }
-  function questionsOfLesson(l) { const set = new Set(l.skills || []); return QUESTIONS.filter(q => set.has(q.skill)); }
+  // Bài tổng hợp (VD D4.4) khai báo questionIds: luyện đúng các câu đó, không sở hữu dạng đề nào.
+  function questionsOfLesson(l) {
+    if (l.questionIds) return l.questionIds.map(id => qById.get(id)).filter(Boolean);
+    const set = new Set(l.skills || []); return QUESTIONS.filter(q => set.has(q.skill));
+  }
+  function lessonSkills(l) { return l.questionIds ? [...new Set(questionsOfLesson(l).map(q => q.skill))] : (l.skills || []); }
   function questionsOfModule(mid) { return QUESTIONS.filter(q => q.module === mid); }
 
   // ---------- Storage ----------
@@ -98,6 +103,18 @@
       });
     }
     return [...found].map(([gi, keys]) => ({ g: GLOSSARY[gi], keys }));
+  }
+  // Mẹo làm bài (data/tips.js): mẹo theo dạng đề + mẹo riêng của câu, bỏ trùng.
+  function tipHtml(q) {
+    if (!q || !window.TIPS) return '';
+    const ids = [...new Set([...((window.TIP_BY_SKILL || {})[q.skill] || []), ...((window.TIP_BY_ID || {})[q.id] || [])])].filter(id => window.TIPS[id]);
+    if (!ids.length) return '';
+    return '<div class="qtip"><div class="title">💡 Mẹo áp dụng</div>' + ids.map(id => '<div class="qtip-item"><b>' + esc(window.TIPS[id][0]) + '</b><div>' + md(window.TIPS[id][1]) + '</div></div>').join('') + '</div>';
+  }
+  // Kiến thức thêm cho từng câu (data/qnotes.js): bổ sung ngoài lời giải có sẵn, viết khi lời giải gốc quá ngắn.
+  function noteHtml(q) {
+    const n = (window.QNOTES || {})[q && q.id];
+    return n ? '<div class="qnote"><div class="title">📚 Kiến thức thêm</div>' + md(n) + '</div>' : '';
   }
   function glossHtml(q) {
     const items = glossOf(q);
@@ -211,7 +228,7 @@
     window.scrollTo(0, 0);
     if (!page) return viewHome();
     if (page === 'm' && modById.has(a)) return viewModule(a);
-    if (page === 'l' && lessonById.has(a)) return b === 'practice' ? viewLessonPractice(a, c === 'all') : viewLesson(a);
+    if (page === 'l' && lessonById.has(a)) return b === 'practice' ? viewLessonPractice(a, c === 'all') : b === 'review' ? viewLessonReview(a) : viewLesson(a);
     if (page === 'practice') return viewPractice();
     if (page === 'exam') return viewExamHub();
     if (page === 'wrong') return viewWrong();
@@ -382,10 +399,15 @@
         <a class="btn primary" href="#/exam" data-start-module="${m.id}">⏱ Thi thử module ${m.id} (${m.exam.mcq + m.exam.open} câu / ${m.minutes} phút)</a>
         <a class="btn" href="#/practice" data-practice-module="${m.id}">🎯 Luyện ngẫu nhiên cả module</a>
       </div>
+      ${(() => { const t = moduleTestInfo(m.id); const last = attemptsOf('modtest-' + m.id).slice(-1)[0];
+        return `<div class="card" style="margin-top:12px"><b>🧪 Test tổng Module ${m.id}</b>
+          <p class="small muted" style="margin:4px 0 8px">${t.count} câu trắc nghiệm lấy từ cả ${t.lessons} bài, ~${t.minutes} phút. Nộp xong có điểm theo từng bài để biết bài nào cần xem lại.${last ? ` Lần gần nhất: <b>${last.score}/100</b>${last.ans ? ` (<a href="#/attempt/${last.id}">xem lại</a>)` : ''}.` : ''}</p>
+          <button class="btn primary" data-start-modtest="${m.id}">Làm test tổng</button></div>`; })()}
       ${topics}
     `, 'mod-' + m.id);
 
     app.querySelector('[data-start-module]').addEventListener('click', e => { e.preventDefault(); startModuleExam(m.id); });
+    app.querySelector('[data-start-modtest]').addEventListener('click', () => startModuleTest(m.id));
     app.querySelector('[data-practice-module]').addEventListener('click', e => { e.preventDefault(); pendingPractice = { module: m.id }; location.hash = '#/practice'; });
   }
 
@@ -417,8 +439,8 @@
 
     // Ví dụ từ đề: mỗi dạng lấy 1 câu trắc nghiệm, tối đa 3 ví dụ.
     const examples = [];
-    for (const s of l.skills || []) {
-      const q = QUESTIONS.find(x => x.skill === s && x.type === 'mcq');
+    for (const s of lessonSkills(l)) {
+      const q = qs.find(x => x.skill === s && x.type === 'mcq');
       if (q && examples.length < 3) examples.push(q);
     }
     const exHtml = examples.map((q, i) => `
@@ -443,6 +465,7 @@
         <div class="row" style="justify-content:center">
           <a class="btn primary" href="#/l/${l.id}/practice">🎯 Luyện nhanh (${Math.min(LESSON_PRACTICE_SIZE, qs.length)} câu)</a>
           ${qs.length > LESSON_PRACTICE_SIZE ? `<a class="btn" href="#/l/${l.id}/practice/all">📚 Làm toàn bộ (${qs.length} câu)</a>` : ''}
+          ${qs.length ? `<a class="btn" href="#/l/${l.id}/review">📖 Học nhanh (xem đáp án)</a>` : ''}
         </div>
         ${qs.length > LESSON_PRACTICE_SIZE ? '<p class="small muted" style="margin-bottom:0">Luyện nhanh bốc ngẫu nhiên, có thể chưa chạm hết các dạng. Làm toàn bộ thì gặp mọi câu của bài và có bảng kết quả theo từng dạng.</p>' : ''}
         ${store.lessons[l.id] && store.lessons[l.id].full ? `<p class="small" style="margin-bottom:0">Lần làm toàn bộ gần nhất: <b>${store.lessons[l.id].full.c}/${store.lessons[l.id].full.n}</b> câu đúng${store.lessons[l.id].full.n < store.lessons[l.id].full.of ? ' (dừng giữa chừng)' : ''}, ${new Date(store.lessons[l.id].full.at).toLocaleDateString('vi-VN')}.</p>` : ''}
@@ -462,7 +485,7 @@
           else if (b.dataset.k === picked) b.classList.add('wrong');
         });
         const ok = picked === q.answer;
-        box.querySelector('.ex-fb').innerHTML = `<div class="feedback ${picked == null || ok ? 'ok' : 'bad'}"><div class="title">${picked == null ? 'Đáp án: ' + esc(q.answer) : ok ? '✅ Chính xác' : '❌ Chưa đúng — đáp án ' + esc(q.answer)}</div>${md(q.explanation)}</div>${glossHtml(q)}`;
+        box.querySelector('.ex-fb').innerHTML = `<div class="feedback ${picked == null || ok ? 'ok' : 'bad'}"><div class="title">${picked == null ? 'Đáp án: ' + esc(q.answer) : ok ? '✅ Chính xác' : '❌ Chưa đúng — đáp án ' + esc(q.answer)}</div>${md(q.explanation)}</div>${tipHtml(q)}${noteHtml(q)}${glossHtml(q)}`;
         box.querySelector('[data-show]').remove();
         enhance(box);
       };
@@ -475,7 +498,7 @@
 
   function pickLessonQuestions(l) {
     const pool = questionsOfLesson(l);
-    const skills = l.skills.filter(s => pool.some(q => q.skill === s));
+    const skills = lessonSkills(l).filter(s => pool.some(q => q.skill === s));
     const per = Math.max(1, Math.ceil(LESSON_PRACTICE_SIZE / Math.max(1, skills.length)));
     let picked = [];
     // Ưu tiên câu sai và câu chưa làm.
@@ -489,11 +512,53 @@
   }
 
   // Toàn bộ câu của bài: trắc nghiệm trước (xen kẽ các dạng), câu mở sau.
+  // Học nhanh: mọi câu của bài trên một trang, đáp án đúng hiện sẵn; mỗi câu một nút mở giải thích
+  // (lời giải + mẹo + kiến thức thêm + thuật ngữ). Không chấm, không ghi vào thống kê hay sổ câu sai.
+  function viewLessonReview(id) {
+    const l = lessonById.get(id);
+    const qs = questionsOfLesson(l);
+    const skills = lessonSkills(l);
+    const mcq = qs.filter(q => !isOpen(q)).sort((x, y) => skills.indexOf(x.skill) - skills.indexOf(y.skill));
+    const open = qs.filter(isOpen);
+    const card = (q, i) => {
+      const answer = isOpen(q)
+        ? `<div class="model-answer"><b>Đáp án mẫu</b><div class="rich">${md(q.modelAnswer || '')}</div></div>`
+        : `<div class="options">${q.options.map(o => `<div class="option ${o.key === q.answer ? 'correct' : ''}"><span class="key">${esc(o.key)}</span><span>${inlineMd(o.text)}${o.key === q.answer ? ' <b>✓</b>' : ''}</span></div>`).join('')}</div>`;
+      const explain = isOpen(q)
+        ? (q.rubric && q.rubric.length ? `<div class="feedback ok"><div class="title">Ý cần có (rubric)</div><ul>${q.rubric.map(r => `<li>${inlineMd(r)}</li>`).join('')}</ul></div>` : '')
+        : `<div class="feedback ok"><div class="title">Giải thích</div>${md(q.explanation || '')}</div>`;
+      const more = explain + tipHtml(q) + noteHtml(q) + (isOpen(q) ? '' : glossHtml(q));
+      return `<div class="card review-q">
+        <div class="small muted">Câu ${i + 1} · ${typeLabel(q)} · ${esc(q.id)}</div>
+        <div class="q-prompt rich">${md(q.prompt)}</div>
+        ${answer}
+        ${more ? `<details class="review-more"><summary>💡 Xem giải thích</summary>${more}</details>` : ''}
+      </div>`;
+    };
+    const all = mcq.concat(open);
+    setView(`
+      <div class="crumbs"><a href="#/m/${l.module}">Module ${l.module}</a> › <a href="#/l/${l.id}">${esc(l.id)} ${esc(l.title)}</a> › Học nhanh</div>
+      <h1>📖 Học nhanh: ${esc(l.title)}</h1>
+      <p class="muted">${all.length} câu, đáp án đúng đã hiện sẵn (tô xanh, có dấu ✓). Bấm <b>"💡 Xem giải thích"</b> dưới mỗi câu để đọc lời giải, mẹo và kiến thức thêm. Chế độ này không chấm điểm; muốn tự kiểm tra thì quay lại bài và bấm "Làm toàn bộ".</p>
+      <div class="row" style="margin-bottom:8px"><button class="btn" data-openall>Mở tất cả giải thích</button><a class="btn ghost" href="#/l/${l.id}/practice/all">📚 Làm toàn bộ để tự kiểm tra</a></div>
+      ${mcq.length ? `<h2>Trắc nghiệm (${mcq.length})</h2>${mcq.map((q, i) => card(q, i)).join('')}` : ''}
+      ${open.length ? `<h2>Tự luận / code (${open.length})</h2>${open.map((q, i) => card(q, mcq.length + i)).join('')}` : ''}
+      <div class="row" style="justify-content:center;margin:16px 0"><a class="btn primary" href="#/l/${l.id}/practice/all">📚 Làm toàn bộ để tự kiểm tra</a></div>
+    `, 'mod-' + l.module);
+    const btn = app.querySelector('[data-openall]');
+    btn.onclick = () => {
+      const ds = [...app.querySelectorAll('details.review-more')];
+      const open = ds.some(d => !d.open);
+      ds.forEach(d => { d.open = open; });
+      btn.textContent = open ? 'Đóng tất cả giải thích' : 'Mở tất cả giải thích';
+    };
+  }
+
   function allLessonQuestions(l) {
     const pool = questionsOfLesson(l);
     const bySkill = {};
     shuffle(pool.filter(q => !isOpen(q))).forEach(q => (bySkill[q.skill] = bySkill[q.skill] || []).push(q));
-    const groups = l.skills.map(s => bySkill[s] || []);
+    const groups = lessonSkills(l).map(s => bySkill[s] || []);
     const mcq = [];
     while (groups.some(g => g.length)) for (const g of groups) if (g.length) mcq.push(g.shift());
     return mcq.concat(shuffle(pool.filter(isOpen)));
@@ -502,7 +567,7 @@
   // Kết quả theo từng dạng đề; mỗi dạng lấy một câu làm ví dụ để người học nhận ra đó là dạng gì.
   function skillBreakdownHtml(l, res) {
     const rows = [];
-    for (const s of l.skills) {
+    for (const s of lessonSkills(l)) {
       const its = res.items.filter(it => it.q.skill === s);
       if (!its.length) continue;
       const c = its.filter(it => it.correct).length;
@@ -547,7 +612,7 @@
           : pass ? (full ? '✅ Đạt! Bạn đã làm hết mọi câu của bài này.' : '✅ Đạt! Bạn đã nắm dạng này.')
             : '🔄 Chưa đạt ' + PASS_RATIO * 100 + '%. Đọc lại phần lý thuyết rồi luyện lại nhé.';
         // Tổng điểm đạt vẫn có thể che một dạng làm sai gần hết → báo riêng các dạng dưới 50%.
-        const weak = l.skills.filter(sk => { const its = res.items.filter(it => it.q.skill === sk); return its.length && its.filter(it => it.correct).length / its.length < 0.5; }).length;
+        const weak = lessonSkills(l).filter(sk => { const its = res.items.filter(it => it.q.skill === sk); return its.length && its.filter(it => it.correct).length / its.length < 0.5; }).length;
         return `<div class="card" style="text-align:center">
           <div class="score-big" style="color:var(${pass ? '--ok' : res.early ? '--warn' : '--bad'})">${res.correct}/${res.total}</div>
           <p><b>${msg}</b></p>
@@ -642,7 +707,7 @@
   const EXAM = window.buildExamSets ? window.buildExamSets(QUESTIONS, MODULES) : { full: [], mlq: [], bank: 0, covered: 0 };
   const setById = new Map(EXAM.full.concat(EXAM.mlq).map(s => [s.id, s]));
   const MAX_ATTEMPTS = 150;
-  const KIND_LABEL = { set: 'Bộ đề', mlq: 'Quiz ML/DL', module: 'Module', random: 'Ngẫu nhiên' };
+  const KIND_LABEL = { set: 'Bộ đề', mlq: 'Quiz ML/DL', modtest: 'Test tổng', module: 'Module', random: 'Ngẫu nhiên' };
 
   // Lịch sử làm bài. Lần đầu chạy bản mới: chuyển các kết quả cũ (chỉ có điểm) sang.
   function attempts() {
@@ -673,6 +738,60 @@
     }
     const open = shuffle(pool.filter(isOpen)).slice(0, m.exam.open);
     return mcq.concat(open);
+  }
+
+  // Test tổng module: lấy trắc nghiệm từ MỌI bài của module (mỗi bài vài câu, rải theo dạng đề),
+  // để kết quả chia theo bài cho biết bài nào cần xem lại. Thi thử module thì bốc theo cấu trúc đề, không phủ hết bài.
+  const MODTEST_TARGET = 48;
+  function pickModuleTest(mid) {
+    const lessons = lessonsOfModule(mid).filter(l => !l.questionIds)
+      .map(l => ({ l, pool: questionsOfLesson(l).filter(q => !q.advanced && !isOpen(q)) }))
+      .filter(x => x.pool.length);
+    const per = Math.max(2, Math.round(MODTEST_TARGET / Math.max(1, lessons.length)));
+    let qs = [];
+    lessons.forEach(({ pool }) => {
+      const bySkill = {};
+      shuffle(pool).forEach(q => (bySkill[q.skill] = bySkill[q.skill] || []).push(q));
+      const groups = shuffle(Object.values(bySkill));
+      const take = [];
+      while (take.length < per && groups.some(g => g.length)) {
+        for (const g of groups) { if (g.length && take.length < per) take.push(g.shift()); }
+      }
+      qs = qs.concat(take);
+    });
+    return shuffle(qs);
+  }
+  function moduleTestInfo(mid) {
+    const n = lessonsOfModule(mid).filter(l => !l.questionIds && questionsOfLesson(l).some(q => !q.advanced && !isOpen(q))).length;
+    const count = n * Math.max(2, Math.round(MODTEST_TARGET / Math.max(1, n)));
+    return { lessons: n, count, minutes: Math.round(count * 1.2) };
+  }
+  function startModuleTest(mid) {
+    const qs = pickModuleTest(mid);
+    runExam('Test tổng Module ' + mid, qs, Math.round(qs.length * 1.2), 'mod-' + mid, { kind: 'modtest', setId: 'modtest-' + mid, again: () => startModuleTest(mid) });
+  }
+
+  // Bảng kết quả theo bài cho bài thi một module (test tổng, thi thử module): bài yếu nhất xếp trước.
+  function lessonBreakdownHtml(res) {
+    const by = new Map();
+    res.items.forEach(it => {
+      if (isOpen(it.q)) return;
+      const l = lessonBySkill.get(it.q.skill);
+      if (!l) return;
+      const r = by.get(l) || { c: 0, n: 0 };
+      r.n++; if (it.correct) r.c++;
+      by.set(l, r);
+    });
+    if (by.size < 2) return '';
+    const order = new Map(LESSONS.map((l, i) => [l, i]));
+    const rows = [...by].sort((x, y) => x[1].c / x[1].n - y[1].c / y[1].n || order.get(x[0]) - order.get(y[0]));
+    const weak = rows.filter(([, r]) => r.c / r.n < 0.5).length;
+    return `<h2>Theo bài (yếu nhất trước)</h2>
+      <p class="small muted">Mỗi bài chỉ có vài câu nên đây là tín hiệu nhanh, chưa phải đánh giá chắc chắn. Bài dưới 50%: đọc lại rồi bấm "Làm toàn bộ" của bài đó để kiểm tra kỹ.${weak ? ` Có <b>${weak} bài</b> dưới 50%.` : ''}</p>
+      <div class="card" style="padding:6px 12px"><table class="simple">
+        <tr><th>Bài</th><th>Đúng</th><th></th></tr>
+        ${rows.map(([l, r]) => { const p = r.c / r.n; return `<tr><td><a href="#/l/${l.id}">${esc(l.id)}</a> <span class="small">${esc(l.title)}</span></td><td>${r.c}/${r.n}</td><td><span class="badge ${p >= 0.8 ? 'ok' : p < 0.5 ? 'bad' : 'warn'}">${p >= 0.8 ? 'Ổn' : p < 0.5 ? 'Xem lại' : 'Tạm'}</span></td></tr>`; }).join('')}
+      </table></div>`;
   }
 
   function startModuleExam(mid) {
@@ -757,6 +876,7 @@
       onAgain: () => {
         if (a.kind === 'mlq') location.hash = '#/mlq';          // quiz một trang, không chạy ở chế độ thi
         else if (a.setId && setById.has(a.setId)) startSet(a.setId);
+        else if (a.kind === 'modtest' && modById.has(String(a.setId).slice(8))) startModuleTest(String(a.setId).slice(8));
         else location.hash = '#/exam';
       },
     });
@@ -778,7 +898,7 @@
       return `<button class="option ${cls}" data-key="${esc(o.key)}" ${done ? 'disabled' : ''}><span class="key">${esc(o.key)}</span><span>${inlineMd(o.text)}</span></button>`;
     }).join('');
     const ok = choice === q.answer;
-    const fb = done ? `<div class="feedback ${ok ? 'ok' : 'bad'}"><div class="title">${ok ? '✅ Chính xác' : '❌ Chưa đúng — đáp án ' + esc(q.answer)}</div>${md(q.explanation)}</div>${glossHtml(q)}` : '';
+    const fb = done ? `<div class="feedback ${ok ? 'ok' : 'bad'}"><div class="title">${ok ? '✅ Chính xác' : '❌ Chưa đúng — đáp án ' + esc(q.answer)}</div>${md(q.explanation)}</div>${tipHtml(q)}${noteHtml(q)}${glossHtml(q)}` : '';
     return `<div class="options">${opts}</div>${fb}`;
   }
 
@@ -917,6 +1037,14 @@
       <h2>Quiz ML/DL (ml_dl_quiz_1)</h2>
       ${mlqHubCard()}
 
+      <h2>Test tổng theo module</h2>
+      <p class="muted small">Lấy câu trắc nghiệm từ <b>mọi bài</b> của module, nộp xong có bảng điểm <b>theo từng bài</b> (yếu nhất xếp trước) để biết bài nào cần đọc lại. Khác với thi thử module ở dưới, vốn bốc theo cấu trúc đề nên không phủ hết bài.</p>
+      <div class="set-grid">
+        ${MODULES.map(m => { const t = moduleTestInfo(m.id); const last = attemptsOf('modtest-' + m.id).slice(-1)[0]; return `<div class="card set-card mod-${m.id}" style="border-top:3px solid var(--mod)"><b>Test tổng Module ${m.id}</b>
+          <div class="muted small">${t.count} câu · ${t.lessons} bài · ~${t.minutes} phút${last ? ' · lần gần nhất ' + last.score + '/100' : ''}</div>
+          <button class="btn" data-modtest="${m.id}">Làm test tổng ${m.id}</button></div>`; }).join('')}
+      </div>
+
       <h2>Thi nhanh (bốc ngẫu nhiên)</h2>
       <div class="set-grid">
         <div class="card set-card"><b>Đề ngẫu nhiên</b><div class="muted small">60 câu · 90 phút · mỗi lần một đề khác</div><button class="btn" data-full>Làm đề</button></div>
@@ -942,6 +1070,7 @@
     `);
     app.querySelector('[data-full]').onclick = startFullExam;
     app.querySelectorAll('[data-mod]').forEach(b => b.onclick = () => startModuleExam(b.dataset.mod));
+    app.querySelectorAll('[data-modtest]').forEach(b => b.onclick = () => startModuleTest(b.dataset.modtest));
     app.querySelectorAll('[data-set]').forEach(b => b.onclick = () => startSet(b.dataset.set));
     app.querySelectorAll('[data-hfilter]').forEach(b => b.onclick = () => { const y = window.scrollY; historyFilter = b.dataset.hfilter; viewExamHub(); window.scrollTo(0, y); });
   }
@@ -1445,7 +1574,7 @@
       if (lock) {
         const ok = a.choice === q.answer;
         body += `<div class="feedback ${ok ? 'ok' : 'bad'}"><div class="title">${ok ? '✅ Chính xác' : '❌ Chưa đúng — đáp án ' + esc(q.answer)}</div>${md(q.explanation)}
-          ${!ok && lesson ? `<div class="small" style="margin-top:6px">📖 Xem lại: <a href="#/l/${lesson.id}">${esc(lesson.id)} ${esc(lesson.title)}</a></div>` : ''}</div>${glossHtml(q)}`;
+          ${!ok && lesson ? `<div class="small" style="margin-top:6px">📖 Xem lại: <a href="#/l/${lesson.id}">${esc(lesson.id)} ${esc(lesson.title)}</a></div>` : ''}</div>${tipHtml(q)}${noteHtml(q)}${glossHtml(q)}`;
       }
     } else {
       body = `<textarea placeholder="Viết câu trả lời / code của bạn ở đây (nháp trên giấy cũng được)..." ${practice && a.revealed ? 'readonly' : ''}>${esc(a.text)}</textarea>`;
@@ -1479,6 +1608,7 @@
         ${body}
       </div>
       <div class="quiz-actions">
+        ${practice && this.idx > 0 ? '<button class="btn ghost" data-prev>← Câu trước</button>' : ''}
         ${practice && this.opts.allowEarly && !last ? '<button class="btn ghost" data-early>Dừng & xem kết quả</button>' : ''}
         ${this.mode === 'exam' ? `<button class="btn" data-prev ${this.idx === 0 ? 'disabled' : ''}>← Trước</button>
           <button class="btn ghost" data-flag>${a.flag ? '🚩 Bỏ đánh dấu' : '🚩 Đánh dấu'}</button>` : ''}
@@ -1495,7 +1625,7 @@
   Quiz.prototype.openReveal = function (i) {
     const q = this.qs[i], a = this.ans[i];
     const rubric = q.rubric && q.rubric.length ? q.rubric : ['Câu trả lời của tôi đúng ý đáp án mẫu'];
-    return `<div class="model-answer"><b>Đáp án mẫu</b><div class="rich">${md(q.modelAnswer || q.explanation || '')}</div></div>
+    return `<div class="model-answer"><b>Đáp án mẫu</b><div class="rich">${md(q.modelAnswer || q.explanation || '')}</div></div>${tipHtml(q)}${noteHtml(q)}
       <div style="margin-top:10px"><b>Tự chấm:</b> tick những ý bạn đã làm được</div>
       <ul class="rubric">${rubric.map((r, k) => `<li><label><input type="checkbox" data-rub="${k}" ${a.checked[k] ? 'checked' : ''}><span>${inlineMd(r)}</span></label></li>`).join('')}</ul>
       <div class="small muted" data-openscore>Đạt ${Math.round(this.openScore(i) * 100)}% rubric</div>`;
@@ -1599,6 +1729,7 @@
       <div class="card"><table class="simple"><tr><th>Module</th><th>Đúng</th><th>Điểm</th></tr>
         ${Object.entries(byMod).map(([m, v]) => `<tr><td>${m}</td><td>${v.c}/${v.n}</td><td data-modpts="${m}">${Math.round(v.pts * 10) / 10}/${Math.round(v.max * 10) / 10}</td></tr>`).join('')}
       </table></div>
+      ${Object.keys(byMod).length === 1 ? lessonBreakdownHtml(res) : ''}
       <h2>Xem lại từng câu</h2>
       ${res.items.map((it, i) => {
         const q = it.q;
@@ -1608,7 +1739,7 @@
           detail = `<div class="model-answer"><b>Bài làm của bạn</b><pre>${esc(it.a.text || '(bỏ trống)')}</pre></div>` + this.openReveal(i).replace('data-openscore', `data-openscore="${i}"`).replace(/data-rub="/g, `data-q="${i}" data-rub="`);
         } else {
           detail = `<div class="options">${q.options.map(o => `<div class="option ${o.key === q.answer ? 'correct' : o.key === it.a.choice ? 'wrong' : ''}"><span class="key">${esc(o.key)}</span><span>${inlineMd(o.text)}</span></div>`).join('')}</div>
-            <div class="feedback ${it.correct ? 'ok' : 'bad'}">${it.a.choice == null ? '<b>Bạn bỏ trống.</b> ' : ''}${md(q.explanation)}</div>${glossHtml(q)}`;
+            <div class="feedback ${it.correct ? 'ok' : 'bad'}">${it.a.choice == null ? '<b>Bạn bỏ trống.</b> ' : ''}${md(q.explanation)}</div>${tipHtml(q)}${noteHtml(q)}${glossHtml(q)}`;
         }
         return `<details class="card result-q" ${isOpen(q) || !it.correct ? '' : ''}><summary>${head}</summary><div class="rich" style="margin:10px 0">${md(q.prompt)}</div>${detail}</details>`;
       }).join('')}

@@ -1030,117 +1030,13 @@ LEFT JOIN orders o ON o.user_id = u.id;</code></pre>
 <li>Cột trong <code>SELECT</code> không nằm trong <code>GROUP BY</code> và cũng không nằm trong hàm gộp.</li></ul></div>
 `},
 
-// ======================= B7 API & REQUESTS =======================
-{
-  id: 'B7.1', module: 'B', topic: 'B7', minutes: 20,
-  title: 'HTTP & requests: gửi request đúng cách',
-  skills: ['api.requests.get-params-timeout', 'api.requests.post-json', 'api.requests.params-vs-json', 'api.auth.bearer-header', 'api.secret.basic-handling'],
-  content: String.raw`
-<div class="box why"><span class="box-title">🎯 Vì sao cần?</span>
-Phản hồi người thi xác nhận Module B có <b>"Python gọi API"</b> (khoảng 70 câu trong bộ mô phỏng). Sản phẩm AI thật luôn gọi API, ví dụ gọi LLM hay lấy dữ liệu.</div>
 
-<h2>1. API & HTTP là gì?</h2>
-<div class="box idea"><span class="box-title">💡 Hiểu nhanh</span>
-API giống <b>quầy gọi món</b>: bạn gửi một <b>yêu cầu (request)</b> theo đúng mẫu, máy chủ trả lại <b>phản hồi (response)</b>. HTTP là "ngôn ngữ" của cuộc trao đổi đó.</div>
-<table>
-<tr><th>Method</th><th>Dùng để</th></tr>
-<tr><td><code>GET</code></td><td><b>Lấy</b> dữ liệu (tham số nằm trên URL)</td></tr>
-<tr><td><code>POST</code></td><td><b>Gửi</b> dữ liệu lên (nằm trong body)</td></tr>
-<tr><td><code>PUT</code> / <code>DELETE</code></td><td>Cập nhật / xóa</td></tr>
-</table>
-
-<h2>2. GET với tham số & timeout</h2>
-<pre><code class="language-python">import requests
-r = requests.get(
-    'https://api.example.com/search',
-    params={'q': 'ai', 'limit': 5},   # → ...search?q=ai&amp;limit=5
-    timeout=4,                        # chờ tối đa 4 giây
-)</code></pre>
-<p>Luôn đặt <b>timeout</b>: không có timeout thì chương trình có thể treo mãi khi server không trả lời.</p>
-
-<h2>3. POST gửi JSON</h2>
-<pre><code class="language-python">payload = {'text': 'xin chào', 'lang': 'vi'}
-r = requests.post(url, json=payload, timeout=6)</code></pre>
-<table>
-<tr><th>Tham số</th><th>Đi vào đâu</th></tr>
-<tr><td><code>params=</code></td><td><b>Query string</b> trên URL (<code>?q=ai</code>), thường dùng với GET</td></tr>
-<tr><td><code>json=</code></td><td><b>Body</b> dạng JSON, tự đặt header Content-Type: application/json</td></tr>
-<tr><td><code>data=</code></td><td>Body dạng form</td></tr>
-<tr><td><code>headers=</code></td><td>Header (xác thực, kiểu dữ liệu…)</td></tr>
-</table>
-
-<h2>4. Xác thực bằng token & bảo vệ API key</h2>
-<pre><code class="language-python">import os
-token = os.environ['API_TOKEN']          # đọc từ biến môi trường
-r = requests.get(url,
-                 headers={'Authorization': f'Bearer {token}'},
-                 timeout=5)</code></pre>
-<div class="box trap"><span class="box-title">⚠️ Không bao giờ</span>
-<ul><li>Ghi thẳng key vào code rồi đẩy lên GitHub.</li><li>Đưa key vào URL (<code>url + token</code>).</li><li><code>print(token)</code> hoặc ghi key vào log.</li></ul></div>
-`},
-
-{
-  id: 'B7.2', module: 'B', topic: 'B7', minutes: 20,
-  title: 'Xử lý response: status code, JSON, kiểm tra dữ liệu, bắt lỗi',
-  skills: ['api.http.raise-for-status', 'api.http.status', 'api.response.parse-json', 'api.response.schema-validation', 'api.response.required-field', 'api.requests.exception-handling'],
-  content: String.raw`
-<div class="box why"><span class="box-title">🎯 Vì sao cần?</span>
-Gọi API xong thì phải <b>kiểm tra kết quả trước khi dùng</b>. Đề hỏi nhiều về mã HTTP, <code>raise_for_status</code>, <code>response.json()</code>, kiểm tra schema và bắt lỗi.</div>
-
-<h2>1. Mã trạng thái HTTP</h2>
-<table>
-<tr><th>Mã</th><th>Ý nghĩa</th></tr>
-<tr><td><b>200</b> OK / 201 Created</td><td>Thành công</td></tr>
-<tr><td><b>400</b> Bad Request</td><td>Request sai định dạng/tham số</td></tr>
-<tr><td><b>401</b> Unauthorized</td><td><b>Chưa xác thực</b> hoặc token sai</td></tr>
-<tr><td><b>403</b> Forbidden</td><td>Đã xác thực nhưng <b>không có quyền</b></td></tr>
-<tr><td><b>404</b> Not Found</td><td>Không tìm thấy tài nguyên</td></tr>
-<tr><td><b>429</b> Too Many Requests</td><td>Gọi quá nhiều, bị giới hạn tốc độ</td></tr>
-<tr><td><b>500</b> / 502 / 503</td><td>Lỗi phía máy chủ</td></tr>
-</table>
-<p>Nhớ nhanh: <b>2xx</b> thành công · <b>4xx</b> lỗi phía người gọi · <b>5xx</b> lỗi phía server.</p>
-
-<h2>2. Khung xử lý chuẩn (thuộc lòng)</h2>
-<pre><code class="language-python">import requests
-
-def get_score(url):
-    try:
-        r = requests.get(url, timeout=5)
-        r.raise_for_status()          # 4xx/5xx → ném HTTPError
-        data = r.json()               # JSON → dict/list Python
-    except requests.RequestException as exc:   # lớp cha mọi lỗi của requests
-        raise RuntimeError('Gọi API thất bại') from exc
-
-    # Kiểm tra schema: KHÔNG tin dữ liệu từ bên ngoài
-    if not isinstance(data, dict) or 'score' not in data:
-        raise ValueError('Thiếu trường score')
-    if not isinstance(data['score'], (int, float)):
-        raise ValueError('score phải là số')
-    return data['score']</code></pre>
-
-<h2>3. Giải thích từng phần</h2>
-<ul>
-<li><code>raise_for_status()</code>: biến mã lỗi 4xx/5xx thành ngoại lệ, tránh xử lý nhầm một phản hồi lỗi như thể dữ liệu đúng.</li>
-<li><code>r.json()</code>: chuyển body JSON thành dict/list. <b>Không dùng <code>eval(r.text)</code></b>, vì nó chạy code lạ từ mạng và rất nguy hiểm.</li>
-<li><code>requests.RequestException</code>: bắt được timeout, mất kết nối, HTTPError…</li>
-<li><b>Kiểm tra schema</b>: đúng kiểu (dict), có trường bắt buộc, danh sách không rỗng, giá trị là số.</li>
-</ul>
-
-<h2>4. Ví dụ kiểm tra danh sách</h2>
-<pre><code class="language-python">values = data.get('values') if isinstance(data, dict) else None
-if not isinstance(values, list) or not values \
-   or not all(isinstance(v, (int, float)) for v in values):
-    raise ValueError('values phải là danh sách số không rỗng')</code></pre>
-
-<div class="box trap"><span class="box-title">⚠️ Bẫy hay gặp</span>
-<ul><li>Nhầm 401 (chưa xác thực) với 403 (không có quyền).</li><li><code>response.json</code> là phương thức nên cần <code>()</code>.</li><li>Tin rằng API luôn trả đúng schema.</li></ul></div>
-`},
 
 // ======================= B8 CODE TỰ LUẬN =======================
 {
   id: 'B8.1', module: 'B', topic: 'B8', minutes: 25,
   title: 'Luyện viết hàm (câu code tự luận)',
-  skills: ['py.code-function', 'api.code.fetch-validate-average', 'api.code.debug-unsafe-request', 'api-numpy.code.fetch-pass-rate'],
+  skills: ['py.code-function'],
   content: String.raw`
 <div class="box why"><span class="box-title">🎯 Vì sao cần?</span>
 Đề có <b>2 câu code</b> (khoảng 2,5 điểm mỗi câu). Bạn không cần code hay, chỉ cần <b>đúng, rõ ràng, có xử lý trường hợp đặc biệt</b>. Bài chấm theo rubric từng ý, nên viết được một phần vẫn có điểm.</div>
@@ -1197,20 +1093,6 @@ def min_max_scale(arr):
 
 def top_k_scores(items, k):
     return sorted(items, key=lambda t: t[1], reverse=True)[:k]</code></pre>
-
-<h2>3. Mẫu kết hợp API + NumPy</h2>
-<pre><code class="language-python">import requests
-import numpy as np
-
-def fetch_pass_rate(url):
-    r = requests.get(url, timeout=5)
-    r.raise_for_status()
-    payload = r.json()
-    scores = payload.get('scores') if isinstance(payload, dict) else None
-    if not isinstance(scores, list) or not scores:
-        raise ValueError('scores phải là danh sách không rỗng')
-    arr = np.array(scores, dtype=float)
-    return float((arr >= 50).mean())   # tỉ lệ phần tử >= 50</code></pre>
 
 <div class="box tip"><span class="box-title">✍️ Mẹo lấy điểm rubric</span>
 <ul><li>Đặt tên biến rõ nghĩa và thêm 1–2 dòng chú thích.</li><li>Ghi rõ "Ví dụ: <code>count_words('a b a')</code> → <code>{'a': 2, 'b': 1}</code>".</li><li>Không nhớ cú pháp chính xác thì vẫn viết đúng logic. Rubric chấm theo ý.</li></ul></div>
@@ -1310,69 +1192,5 @@ x.mean(axis=0)             # theo từng CỘT;  axis=1: theo từng HÀNG
 <li>Xóa trùng <b>trước</b> khi chuẩn hóa chuỗi: "An" và " An " sẽ không bị coi là trùng.</li></ul></div>
 `},
 
-// ======================= B9 KỸ THUẬT PHẦN MỀM =======================
-{
-  id: 'B9.1', module: 'B', topic: 'B9', minutes: 18,
-  title: 'Kỹ thuật phần mềm: Git, kiểm thử, debug, logging',
-  skills: ['ts.se'],
-  content: String.raw`
-<div class="box why"><span class="box-title">🎯 Vì sao cần?</span>
-"Kỹ thuật lập trình" không chỉ là viết code chạy được, mà còn là viết code người khác đọc được, kiểm chứng được và sửa được. Đây là phần phân biệt người mới học với người làm việc được trong nhóm.</div>
-
-<h2>1. Git: quản lý phiên bản</h2>
-<table>
-<tr><th>Khái niệm</th><th>Ý nghĩa</th></tr>
-<tr><td>Repository (repo)</td><td>Thư mục dự án cùng toàn bộ lịch sử thay đổi</td></tr>
-<tr><td>Commit</td><td>Một "ảnh chụp" thay đổi kèm lời mô tả</td></tr>
-<tr><td>Branch (nhánh)</td><td>Một dòng phát triển riêng, để làm tính năng mà không ảnh hưởng nhánh chính</td></tr>
-<tr><td>Merge</td><td>Gộp thay đổi của nhánh này vào nhánh khác</td></tr>
-<tr><td>Pull request</td><td>Đề nghị gộp code, để người khác <b>review</b> trước khi gộp</td></tr>
-<tr><td>Conflict</td><td>Hai người sửa cùng một chỗ, Git không tự gộp được, phải sửa tay</td></tr>
-</table>
-<pre><code class="language-bash">git clone &lt;url&gt;          # tải repo về
-git checkout -b feature  # tạo nhánh mới
-git add .                # chọn thay đổi
-git commit -m "mô tả"    # lưu một phiên bản
-git push                 # đẩy lên máy chủ
-git pull                 # lấy thay đổi mới về</code></pre>
-<p>File <code>.gitignore</code> liệt kê những thứ <b>không</b> đưa vào Git: mật khẩu, API key, file <code>.env</code>, dữ liệu lớn.</p>
-
-<h2>2. Kiểm thử (testing)</h2>
-<pre><code class="language-python">def safe_mean(arr):
-    return sum(arr) / len(arr) if arr else 0
-
-def test_safe_mean():                 # chạy bằng pytest
-    assert safe_mean([1, 2, 3]) == 2
-    assert safe_mean([]) == 0         # trường hợp biên: list rỗng</code></pre>
-<ul>
-<li><b>Unit test</b>: kiểm tra từng hàm nhỏ một cách độc lập.</li>
-<li>Luôn thử <b>trường hợp biên</b>: rỗng, một phần tử, số âm, giá trị thiếu.</li>
-<li>Trong dự án AI, test bước <b>tiền xử lý dữ liệu</b> đặc biệt quan trọng: một lỗi nhỏ ở đó không làm chương trình sập mà âm thầm làm model kém đi.</li>
-</ul>
-
-<h2>3. Debug</h2>
-<ol class="steps">
-<li><b>Đọc thông báo lỗi</b> (traceback): dòng cuối cùng cho biết loại lỗi, phía trên cho biết lỗi ở file và dòng nào.</li>
-<li><b>Tái hiện</b> lỗi bằng một input nhỏ nhất có thể.</li>
-<li><b>Khoanh vùng</b>: in giá trị trung gian hoặc tắt bớt từng phần để tìm chỗ sai.</li>
-<li>Sửa, chạy lại, rồi <b>thêm test</b> để lỗi không quay lại.</li>
-</ol>
-
-<h2>4. Logging thay cho print</h2>
-<pre><code class="language-python">import logging
-logging.basicConfig(level=logging.INFO)
-logging.info('bắt đầu xử lý %d dòng', 100)
-logging.warning('thiếu cột age, dùng giá trị mặc định')
-logging.error('không gọi được API')</code></pre>
-<p>Logging có <b>mức độ</b> (DEBUG &lt; INFO &lt; WARNING &lt; ERROR &lt; CRITICAL), có thời gian, ghi được ra file và bật tắt theo mức mà không cần sửa code. <code>print</code> thì không.</p>
-
-<h2>5. Thói quen viết code tốt</h2>
-<ul>
-<li>Tên biến và tên hàm nói rõ ý nghĩa; mỗi hàm làm <b>một việc</b>.</li>
-<li>Không lặp lại code (DRY): đoạn giống nhau thì tách thành hàm.</li>
-<li><b>Môi trường ảo</b> (venv) và file <code>requirements.txt</code> để người khác cài đúng phiên bản thư viện.</li>
-<li>Không ghi mật khẩu hay API key trong code.</li>
-</ul>
-`},
 
 ]);

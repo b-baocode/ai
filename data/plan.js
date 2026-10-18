@@ -24,7 +24,7 @@ window.PLAN = {
     'A2.2': ['A2.1'], 'A2.3': ['A2.2'], 'A2.4': ['A2.2'], 'A3.2': ['A2.1'],
     'A4.3': ['A4.2'], 'A4.4': ['A4.3'], 'A4.5': ['A4.4'],
     'B0.2': ['B0.1'], 'B1.1': ['B0.2'], 'B1.2': ['B0.2'], 'B1.3': ['B1.1'], 'B2.1': ['B0.2'], 'B2.2': ['B1.1'],
-    'B3.2': ['B0.2'], 'B4.2': ['B4.1'], 'B4.3': ['B4.1'], 'B5.2': ['B5.1'], 'B6.1': ['B5.1'], 'B7.2': ['B7.1'], 'B8.1': ['B1.2'],
+    'B3.2': ['B0.2'], 'B4.2': ['B4.1'], 'B4.3': ['B4.1'], 'B5.2': ['B5.1'], 'B6.1': ['B5.1'], 'B8.1': ['B1.2'],
     'C3.2': ['C3.1'], 'C5.2': ['C5.1'], 'C8.2': ['C8.1'], 'C8.3': ['C8.1'],
     'B8.2': ['B4.1', 'B5.1'],
     'A1.2': ['A1.1'], 'B2.3': ['B0.2'], 'B2.4': ['B0.2'], 'B3.3': ['B1.1'], 'C8.4': ['C8.1'], 'C9.2': ['C9.1'],
@@ -39,9 +39,9 @@ window.PLAN = {
     'A3.3': 0.12,
     // Các bài thêm sau đợt rà soát độc lập 13/10 (theo tên module + thông tin chương trình của ban tổ chức):
     'A1.2': 0.2, 'A6.1': 0.25,                 // thống kê suy luận, tư duy định lượng (vế thứ hai của tên Module A)
-    'B2.3': 0.08, 'B2.4': 0.08, 'B3.3': 0.08, 'B9.1': 0.06, 'B6.2': 0.2,
+    'B2.3': 0.08, 'B2.4': 0.08, 'B3.3': 0.08, 'B6.2': 0.2,
     'C8.4': 0.15, 'C9.2': 0.25, 'C1.3': 0.6, 'C10.2': 0.4,   // ban tổ chức nêu đích danh: dữ liệu, LLM engineering, AI business, AI infrastructure
-    'D1.3': 0.3, 'D4.2': 0.2, 'D5.2': 0.4,   // toán rời rạc: thí sinh K4 nói Toán chủ yếu XSTK, CTRR
+    'D1.3': 0.3, 'D4.2': 0.2, 'D4.3': 0.2, 'D5.2': 0.4,   // toán rời rạc: thí sinh K4 nói Toán chủ yếu XSTK, CTRR
   },
 
   // Độ khó riêng của từng bài khi khác với độ khó chung của vùng.
@@ -54,7 +54,7 @@ window.PLAN = {
     'B8.1': 3,              // tự viết hàm Python từ đầu
     'C8.3': 1,              // agent/MCP: mức khái niệm
     'A3.3': 1,
-    'A1.2': 2, 'A6.1': 1, 'B2.3': 2, 'B2.4': 2, 'B3.3': 2, 'B6.2': 1, 'B9.1': 1, 'C8.4': 1, 'C9.2': 1, 'D1.3': 2, 'D4.2': 1, 'D5.2': 1,              // toán rời rạc: thuộc công thức là làm được
+    'A1.2': 2, 'A6.1': 1, 'B2.3': 2, 'B2.4': 2, 'B3.3': 2, 'B6.2': 1, 'C8.4': 1, 'C9.2': 1, 'D1.3': 2, 'D4.2': 1, 'D4.3': 1, 'D5.2': 1,              // toán rời rạc: thuộc công thức là làm được
   },
 
   groups: [
@@ -67,15 +67,13 @@ window.PLAN = {
 
     { id: 'B-numpy', module: 'B', name: 'NumPy: shape, axis, broadcasting', points: 7, difficulty: 2, lessons: ['B4.1', 'B4.2', 'B4.3'],
       how: 'Hầu hết câu chỉ hỏi SHAPE: ghi shape từng biến ra nháp rồi áp 3 quy tắc (axis, số nguyên vs slice, broadcasting).' },
-    { id: 'B-api', module: 'B', name: 'requests / HTTP / JSON', points: 4, difficulty: 1, lessons: ['B7.1', 'B7.2'],
-      how: 'Thuần ghi nhớ: params vs json, timeout, Bearer header, raise_for_status, .json(), bảng mã 401/403/404/429/5xx.' },
     { id: 'B-euclid', module: 'B', name: 'Thuật toán Euclid (GCD)', points: 3, difficulty: 1, lessons: ['B3.2'],
       how: 'Một thuật toán duy nhất, 4 dòng code. Thuộc "a, b = b, a % b" và lập bảng trace là làm được mọi biến thể.' },
-    { id: 'B-python', module: 'B', name: 'Python & kỹ thuật lập trình (đọc code, OOP, thuật toán, Git)', points: 4, difficulty: 2, lessons: ['B0.1', 'B0.2', 'B1.1', 'B1.2', 'B1.3', 'B2.1', 'B2.2', 'B2.3', 'B2.4', 'B3.1', 'B3.3', 'B9.1'],
+    { id: 'B-python', module: 'B', name: 'Python & kỹ thuật lập trình (đọc code, OOP, thuật toán)', points: 4, difficulty: 2, lessons: ['B0.1', 'B0.2', 'B1.1', 'B1.2', 'B1.3', 'B2.1', 'B2.2', 'B2.3', 'B2.4', 'B3.1', 'B3.3'],
       how: 'Trace bằng bảng trạng thái từng dòng, không đoán. Nhiều bài nhưng ít điểm: chỉ học bài được xếp vào lịch.' },
-    { id: 'B-pandas', module: 'B', name: 'Pandas, SQL & làm sạch dữ liệu', points: 4, difficulty: 2, lessons: ['B5.1', 'B5.2', 'B6.1', 'B6.2'],
+    { id: 'B-pandas', module: 'B', name: 'Pandas, SQL & làm sạch dữ liệu', points: 6, difficulty: 2, lessons: ['B5.1', 'B5.2', 'B6.1', 'B6.2'],
       how: 'Thuộc tên lệnh và tác dụng (loc/iloc, fillna, dropna, drop_duplicates, groupby, .str.strip).' },
-    { id: 'B-code', module: 'B', name: 'Viết code tự luận: hàm Python, NumPy/Pandas, cosine similarity', points: 6, difficulty: 2, lessons: ['B8.2', 'B8.1'],
+    { id: 'B-code', module: 'B', name: 'Viết code tự luận: hàm Python, NumPy/Pandas, cosine similarity', points: 8, difficulty: 2, lessons: ['B8.2', 'B8.1'],
       how: 'Người thi kể có 2–3 câu code về mảng/bảng và cosine similarity. Thuộc mẫu cosine_similarity và khung làm sạch Pandas 5 dòng; chấm theo ý nên viết đúng khung là có điểm.',
       essay: 'Tự viết được hàm cosine_similarity và một hàm làm sạch bảng bằng Pandas không cần nhìn mẫu' },
 
@@ -101,7 +99,7 @@ window.PLAN = {
 
     { id: 'D-privacy', module: 'D', name: 'Quyền riêng tư & bảo vệ dữ liệu', points: 3, difficulty: 1, lessons: ['D3.1'],
       how: 'Luôn chọn đáp án: dùng ít dữ liệu nhất, đúng mục đích, kiểm soát ở server, có log, sự cố thì dừng và giữ bằng chứng.' },
-    { id: 'D-responsible', module: 'D', name: 'Đạo đức AI theo tình huống (kèm tự luận)', points: 4, difficulty: 1, lessons: ['D4.1', 'D4.2'],
+    { id: 'D-responsible', module: 'D', name: 'Đạo đức AI theo tình huống (kèm tự luận)', points: 4, difficulty: 1, lessons: ['D4.1', 'D4.2', 'D4.3'],
       how: 'Luôn chọn đáp án có người duyệt cho quyết định rủi ro cao; tự luận viết theo 6 nguyên tắc.' },
     { id: 'D-logic', module: 'D', name: 'Logic, ngụy biện, phân tích nguyên nhân', points: 2, difficulty: 2, lessons: ['D1.1', 'D1.2', 'D1.3', 'D2.1'],
       how: 'Thuộc bảng 2 kiểu suy luận đúng / 2 kiểu sai và cách phủ định "tất cả" ↔ "có ít nhất một".' },

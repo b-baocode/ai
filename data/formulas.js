@@ -137,10 +137,6 @@ window.FORMULAS = [
       ['Thiếu dữ liệu', 'số → mean/median · phân loại → mode · ít → dropna'],
       ['Outlier IQR', String.raw`ngoài \([Q_1 - 1{,}5\,IQR,\ Q_3 + 1{,}5\,IQR]\)`],
     ]],
-    ['HTTP', 'B7.2', [
-      ['Mã trạng thái', '2xx OK · 400 sai request · 401 chưa xác thực · 403 không có quyền · 404 không thấy · 429 quá nhiều · 5xx lỗi server'],
-      ['requests', 'params= → query URL · json= → body · headers Authorization: Bearer · luôn có timeout · raise_for_status() · .json()'],
-    ]],
   ]},
   { module: 'C', groups: [
     ['Metrics phân loại', 'C3.1', [

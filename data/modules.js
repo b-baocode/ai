@@ -20,7 +20,7 @@ window.MODULES = [
   {
     id: 'B',
     name: 'Kỹ thuật Lập trình & Xử lý dữ liệu',
-    desc: 'Python, đọc code, NumPy, Pandas, gọi API với requests, thuật toán Euclid.',
+    desc: 'Python, đọc code, NumPy, Pandas, SQL, thuật toán Euclid.',
     minutes: 25,
     exam: { mcq: 18, open: 2 },
     topics: [
@@ -31,9 +31,7 @@ window.MODULES = [
       { id: 'B4', title: 'NumPy' },
       { id: 'B5', title: 'Pandas' },
       { id: 'B6', title: 'Làm sạch dữ liệu & SQL' },
-      { id: 'B7', title: 'API, HTTP, JSON với requests' },
       { id: 'B8', title: 'Luyện bài code tự luận' },
-      { id: 'B9', title: 'Kỹ thuật phần mềm' },
     ],
   },
   {
@@ -43,6 +41,7 @@ window.MODULES = [
     minutes: 25,
     exam: { mcq: 9, open: 3 },
     topics: [
+      { id: 'CE', title: 'Mẹo nhớ nhanh & ôn đề (làm đầu tiên)' },
       { id: 'C0', title: 'Bản đồ AI & các loại bài toán' },
       { id: 'C1', title: 'Quy trình ML & dữ liệu cho AI' },
       { id: 'C2', title: 'Các mô hình cổ điển (kể cả SVM)' },
@@ -55,6 +54,7 @@ window.MODULES = [
       { id: 'C9', title: 'Tư duy sản phẩm AI' },
       { id: 'C10', title: 'Triển khai, hạ tầng dữ liệu & vận hành' },
       { id: 'C11', title: 'Mở rộng (ít khả năng ra thi)' },
+      { id: 'CT', title: 'Luyện câu tự soạn (làm sau cùng)' },
     ],
   },
   {

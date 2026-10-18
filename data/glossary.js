@@ -129,8 +129,8 @@
   G('Escalation', 'escalation|escalate|chuyển cấp', 'Chuyển vấn đề lên người có thẩm quyền hoặc chuyên môn khi vượt quá phạm vi mình được phép tự quyết.', 'D5.1');
   G('MVP', 'mvp|poc|prototype', 'Sản phẩm khả dụng tối thiểu: bản đơn giản nhất dùng được, làm nhanh để kiểm chứng giá trị trước khi đầu tư lớn. PoC là bản thử chỉ để chứng minh làm được.', 'C9.2');
   G('ROI / KPI', 'roi|kpi', 'ROI: lợi ích thu về so với chi phí bỏ ra. KPI: chỉ số đo mức hoàn thành mục tiêu.', 'C9.2');
-  G('Log & audit log', 'audit log|logging|xóa log|lưu log|ghi log|log lỗi', 'Log là nhật ký hệ thống ghi lại việc đã xảy ra, dùng để tìm lỗi. Audit log ghi ai đã làm gì, khi nào, để truy vết trách nhiệm. Xóa hoặc không lưu log là mất bằng chứng.', 'B9.1');
-  G('API', 'api|endpoint|api key', 'Cổng để chương trình này gọi chương trình khác qua mạng. Endpoint là một địa chỉ cụ thể của API. API key là chuỗi bí mật để xác thực, không được in ra hay đưa vào code công khai.', 'B7.1');
+  G('Log & audit log', 'audit log|logging|xóa log|lưu log|ghi log|log lỗi', 'Log là nhật ký hệ thống ghi lại việc đã xảy ra, dùng để tìm lỗi. Audit log ghi ai đã làm gì, khi nào, để truy vết trách nhiệm. Xóa hoặc không lưu log là mất bằng chứng.');
+  G('API', 'api|endpoint|api key', 'Cổng để chương trình này gọi chương trình khác qua mạng. Endpoint là một địa chỉ cụ thể của API. API key là chuỗi bí mật để xác thực, không được in ra hay đưa vào code công khai.');
   G('Frontend / backend', 'frontend|backend|css|=UI|server', 'Frontend: phần giao diện người dùng thấy (HTML, CSS). Backend/server: phần xử lý và dữ liệu phía sau. Đổi giao diện không sửa được lỗi của mô hình hay dữ liệu.');
   G('Database & cache', 'database|cache|cơ sở dữ liệu', 'Database: nơi lưu dữ liệu có tổ chức để truy vấn. Cache: bộ nhớ tạm giữ kết quả hay dùng để trả lời nhanh hơn.', 'B6.2');
 
@@ -142,7 +142,7 @@
   G('None', '=None', 'Giá trị "không có gì" của Python. Hàm không có return thì trả về None.', 'B2.2');
   G('break / continue / return', 'break|continue|return 0', 'break: thoát hẳn vòng lặp. continue: bỏ phần còn lại của lượt này, sang lượt kế. return: kết thúc cả hàm và trả giá trị.', 'B0.2');
   G('Các loại lỗi Python', 'typeerror|valueerror|keyerror|indexerror|zerodivisionerror|importerror|keyboardinterrupt|stopiteration|attributeerror|nameerror', 'TypeError: sai kiểu. ValueError: đúng kiểu nhưng giá trị không hợp lệ. KeyError: dict không có khóa. IndexError: vượt chỉ số. ImportError: không nạp được thư viện. KeyboardInterrupt: người dùng bấm Ctrl+C. StopIteration: hết phần tử để lặp.', 'B2.3');
-  G('eval()', 'eval', 'Hàm chạy một chuỗi như code Python. Nguy hiểm với dữ liệu từ bên ngoài vì có thể thực thi mã độc; đọc JSON thì dùng json.loads hoặc response.json().', 'B7.2');
+  G('eval()', 'eval', 'Hàm chạy một chuỗi như code Python. Nguy hiểm với dữ liệu từ bên ngoài vì có thể thực thi mã độc; đọc JSON thì dùng json.loads hoặc response.json().');
   G('lambda & comprehension', 'lambda|comprehension', 'lambda: hàm một dòng không tên. Comprehension: cách viết gọn để tạo list/dict từ vòng lặp.', 'B2.2');
   G('Đệ quy', 'recursion|đệ quy|recursionerror', 'Hàm tự gọi lại chính nó; bắt buộc có điều kiện dừng, nếu không sẽ lỗi RecursionError.', 'B2.3');
   G('OOP', 'class cha|kế thừa|inheritance|__init__|self|override', 'Class là khuôn, object là sản phẩm. __init__ chạy khi tạo object; self là chính object đó. Class con kế thừa class cha và có thể ghi đè (override) phương thức.', 'B2.4');
@@ -160,12 +160,12 @@
   G('CSV', 'csv|file csv', 'Tệp văn bản lưu bảng, mỗi dòng một hàng, các cột cách nhau bằng dấu phẩy. Đọc bằng pd.read_csv.', 'B5.1');
 
   // ---------- HTTP / requests / JSON ----------
-  G('GET / POST', '=GET|=POST|requests.get|requests.post', 'GET: lấy dữ liệu, tham số nằm trên URL. POST: gửi dữ liệu lên, nội dung nằm trong thân request.', 'B7.1');
-  G('params / data / json (requests)', 'params=|data=|json=|params|payload', 'params=: thêm tham số vào URL (dùng với GET). json=: gửi thân request dạng JSON (dùng với POST). data=: gửi dạng form. Dùng nhầm thì server không nhận được dữ liệu như mong đợi.', 'B7.1');
-  G('timeout', 'timeout|timeout=none', 'Thời gian chờ tối đa của một request. Không đặt (hoặc None) thì chương trình có thể treo vô hạn khi server không trả lời.', 'B7.1');
-  G('Status code', 'status code|status_code|raise_for_status|response.ok|mã 200|mã 404|mã 500', 'Mã kết quả HTTP: 2xx thành công, 4xx lỗi phía người gọi (404 không tìm thấy, 401 chưa xác thực), 5xx lỗi phía server. raise_for_status() ném lỗi nếu mã là 4xx/5xx.', 'B7.2');
-  G('JSON', 'json|json.loads|json.dumps|response.json()|response.text', 'Định dạng văn bản để trao đổi dữ liệu, trông giống dict/list. response.json() đổi thân response thành dict; response.text là chuỗi thô (là thuộc tính, không phải hàm).', 'B7.2');
-  G('URL', 'url', 'Địa chỉ của tài nguyên trên mạng. Tham số truy vấn nối sau dấu ?, ví dụ .../search?q=ai. Tự cộng chuỗi vào URL dễ thiếu dấu ? và không mã hóa ký tự đặc biệt.', 'B7.1');
+  G('GET / POST', '=GET|=POST|requests.get|requests.post', 'GET: lấy dữ liệu, tham số nằm trên URL. POST: gửi dữ liệu lên, nội dung nằm trong thân request.');
+  G('params / data / json (requests)', 'params=|data=|json=|params|payload', 'params=: thêm tham số vào URL (dùng với GET). json=: gửi thân request dạng JSON (dùng với POST). data=: gửi dạng form. Dùng nhầm thì server không nhận được dữ liệu như mong đợi.');
+  G('timeout', 'timeout|timeout=none', 'Thời gian chờ tối đa của một request. Không đặt (hoặc None) thì chương trình có thể treo vô hạn khi server không trả lời.');
+  G('Status code', 'status code|status_code|raise_for_status|response.ok|mã 200|mã 404|mã 500', 'Mã kết quả HTTP: 2xx thành công, 4xx lỗi phía người gọi (404 không tìm thấy, 401 chưa xác thực), 5xx lỗi phía server. raise_for_status() ném lỗi nếu mã là 4xx/5xx.');
+  G('JSON', 'json|json.loads|json.dumps|response.json()|response.text', 'Định dạng văn bản để trao đổi dữ liệu, trông giống dict/list. response.json() đổi thân response thành dict; response.text là chuỗi thô (là thuộc tính, không phải hàm).');
+  G('URL', 'url', 'Địa chỉ của tài nguyên trên mạng. Tham số truy vấn nối sau dấu ?, ví dụ .../search?q=ai. Tự cộng chuỗi vào URL dễ thiếu dấu ? và không mã hóa ký tự đặc biệt.');
 
   // ---------- SQL ----------
   G('SELECT … FROM … WHERE', '=SELECT|=FROM|=WHERE', 'SELECT chọn cột, FROM chọn bảng, WHERE lọc DÒNG trước khi gom nhóm.', 'B6.2');
@@ -208,7 +208,7 @@
   G('Suy diễn / quy nạp', 'suy diễn|quy nạp|deduction|induction', 'Suy diễn: từ quy tắc chung tới trường hợp riêng, kết luận chắc chắn nếu tiền đề đúng. Quy nạp: từ nhiều quan sát tới quy tắc chung, chỉ có khả năng đúng.', 'D1.3');
   G('Stack / queue', 'stack|queue|lifo|fifo|ngăn xếp|hàng đợi', 'Stack: vào sau ra trước (LIFO), như chồng đĩa. Queue: vào trước ra trước (FIFO), như xếp hàng.', 'B3.3');
   G('Tìm kiếm nhị phân & sắp xếp', 'binary search|tìm kiếm nhị phân|merge sort|quick sort|bubble sort|insertion sort|selection sort', 'Tìm kiếm nhị phân: mỗi bước bỏ một nửa, cần dãy đã sắp xếp, O(log n). Merge/quick sort là O(n log n); bubble, insertion, selection sort là O(n²).', 'B3.3');
-  G('Git, test, debug', 'git|commit|branch|unit test|pytest|debug|bug', 'Git: quản lý phiên bản code (commit = lưu một mốc, branch = nhánh làm việc riêng). Unit test: đoạn code kiểm tra một hàm chạy đúng. Debug: tìm và sửa lỗi (bug).', 'B9.1');
+  G('Git, test, debug', 'git|commit|branch|unit test|pytest|debug|bug', 'Git: quản lý phiên bản code (commit = lưu một mốc, branch = nhánh làm việc riêng). Unit test: đoạn code kiểm tra một hàm chạy đúng. Debug: tìm và sửa lỗi (bug).');
 
   // ---------- Bổ sung ----------
   G('Deep learning & mạng nơ-ron', 'deep learning|neural network|neural networks|neural|mạng nơ-ron|học sâu|shallow', 'Mạng nơ-ron: nhiều lớp nơ-ron nối nhau, học bằng cách chỉnh trọng số. Deep learning (học sâu) là mạng có nhiều lớp ẩn; mạng "shallow" (nông) chỉ có một hai lớp.', 'C5.1');
@@ -229,6 +229,12 @@
   G('Semantic chunking', 'semantic chunking|hierarchical chunking', 'Chia tài liệu theo ý nghĩa: sang đoạn mới khi nội dung đổi chủ đề, để mỗi đoạn trọn một ý. Hierarchical chunking thì chia theo nhiều mức (chương, đoạn, câu).', 'C8.2');
   G('Multimodal', 'multimodal|đa phương thức', 'Mô hình xử lý được nhiều loại dữ liệu cùng lúc: văn bản, ảnh, âm thanh.', 'C8.2');
   G('Self-host', 'self-host|self-hosted|tự host', 'Tự chạy mô hình trên máy chủ của mình thay vì gọi API bên ngoài: giữ được dữ liệu trong nội bộ, đổi lại phải tự lo hạ tầng và GPU.', 'C8.2');
+
+  G('EU AI Act', 'eu ai act|ai act|đạo luật ai', 'Đạo luật AI của EU (2024): quản lý theo 4 mức rủi ro (cấm, cao, hạn chế, tối thiểu); phạt tối đa 35 triệu euro hoặc 7% doanh thu toàn cầu.', 'D4.3');
+  G('GDPR', 'gdpr', 'Quy định chung về bảo vệ dữ liệu của EU (2018): 7 nguyên tắc xử lý dữ liệu, quyền của chủ thể dữ liệu, quyền yêu cầu con người xem xét quyết định hoàn toàn tự động; phạt tối đa 20 triệu euro hoặc 4%.', 'D4.3');
+  G('Chấm điểm xã hội', 'social scoring|chấm điểm xã hội', 'Xếp hạng người dân theo hành vi rồi đối xử bất lợi với họ. Bị cấm theo EU AI Act.', 'D4.3');
+  G('NIST AI RMF', 'nist|ai rmf', 'Khung quản lý rủi ro AI tự nguyện của Hoa Kỳ, 4 chức năng: Govern, Map, Measure, Manage.', 'D4.3');
+  G('OECD & UNESCO về AI', 'oecd|unesco', 'Hai bộ nguyên tắc quốc tế về AI có trách nhiệm (OECD 2019, cập nhật 2024; UNESCO 2021). Là khuyến nghị, không phải luật bắt buộc.', 'D4.3');
 
   window.GLOSSARY = out;
 })();

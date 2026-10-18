@@ -84,6 +84,10 @@
     'A5.1': { items: [
       ['Thuật toán dạy mọi AI cách học (gradient descent)', Y('w_Rk7JgjDno')],
     ], q: 'đạo hàm cơ bản gradient descent là gì' },
+    'A5.2': { items: [
+      ['Thuật toán dạy mọi AI cách học (gradient descent)', Y('w_Rk7JgjDno')],
+      ['Thuật toán lan truyền ngược trong mạng nơ-ron', Y('TLbzsBWLwOo')],
+    ], q: 'gradient descent ví dụ tính tay learning rate' },
     'A6.1': { items: [], q: 'ước lượng Fermi cách đọc biểu đồ tránh bị đánh lừa' },
 
     // ---------- Module B ----------
@@ -150,17 +154,14 @@
       ['SQL SUM COUNT GROUP BY – Tự học SQL cùng Vịt, khóa cơ bản phần 2', Y('9mYjH5Gw3_k')],
       ['Tự học SQL cùng Vịt – khóa cơ bản cho người mới bắt đầu (playlist)', PL('PL01fPqVNMdrmtcb_Yui_Oh23X_3laoZoO'), 'dành cho người không học IT'],
     ], q: 'SQL cơ bản SELECT WHERE GROUP BY JOIN' },
-    'B7.1': { items: [], q: 'python requests gọi API GET POST tiếng việt' },
-    'B7.2': { items: [], q: 'python requests status code json xử lý lỗi tiếng việt' },
     'B8.1': { items: [PY_PL], q: 'bài tập python cơ bản viết hàm có lời giải' },
     'B8.2': { items: [NUMPY, PANDAS], q: 'cosine similarity numpy python' },
-    'B9.1': { items: [
-      ['Hướng dẫn cài đặt và sử dụng Git và GitHub chi tiết từng bước cho người mới', Y('mZauyDawIxk')],
-      ['Sử dụng lệnh Git cơ bản: git add, commit, push…', Y('Itmy5fTw3xk')],
-      ['Git cơ bản cho người mới: branch, merge & resolve conflict', Y('Ic0PCffTvkg')],
-    ], q: 'git cơ bản cho người mới unit test python' },
 
     // ---------- Module C ----------
+    'CS.1': { items: [], q: 'mẹo ôn thi trắc nghiệm AI machine learning' },
+    'CE.1': { items: [], q: 'ôn thi trắc nghiệm machine learning AI cơ bản' },
+    'CT.1': { items: [], q: 'machine learning cơ bản tiếng việt' },
+    'CM.1': { items: [], q: 'mẹo làm bài trắc nghiệm machine learning' },
     'C0.1': { items: [
       ['Phân biệt AI, Machine Learning, Deep Learning', Y('_N1Q1o6J0vg')],
       ['Trí tuệ nhân tạo – Máy học là gì?', Y('13R2ytXz7j0')],
@@ -260,6 +261,10 @@
       ['Thiết lập khung đạo đức cho trí tuệ nhân tạo', Y('YZMQ_pzSAd8'), 'tin thời sự'],
       ['Tranh chấp bản quyền giữa nghệ sĩ và AI', Y('67WM47hB2R4'), 'tin thời sự'],
     ], q: 'AI và bản quyền deepfake đạo đức AI' },
+    'D4.3': { items: [], q: 'EU AI Act là gì Luật Trí tuệ nhân tạo Việt Nam 2025' },
+    'D4.4': { items: [
+      ['Các nguyên tắc đạo đức quan trọng khi sử dụng công cụ AI', Y('SBpObrCYsUs')],
+    ], q: 'đạo đức AI tình huống quyền riêng tư dữ liệu' },
     'D5.1': { items: [
       ['Thay vì ghét bỏ, hãy tìm cách giải quyết mâu thuẫn với đồng nghiệp', Y('V2ghvdj3UWI')],
     ], q: 'cách góp ý với cấp trên nhận lỗi trong công việc' },

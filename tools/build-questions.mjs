@@ -38,6 +38,7 @@ for (const f of fs.readdirSync(n26Dir).filter(f => f.endsWith('.json')).sort()) 
   const exam = JSON.parse(fs.readFileSync(path.join(n26Dir, f), 'utf8'));
   for (const q of exam.questions) {
     const skill = (q.skillId || 'misc').replace(/-\d+$/, '').replace(/\.(\d+|[a-z])$/, '');
+    if (/^api[.-]/.test(skill)) continue;   // requests/HTTP: người dùng bỏ phần này (18/10), xóa bài B7.1, B7.2
     push(q, 'aitest-n26', skill, exam.id);
   }
 }

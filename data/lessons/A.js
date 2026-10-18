@@ -1049,11 +1049,99 @@ $$\int_a^b f(x)\,dx = F(b) - F(a) \quad \text{với } F' = f$$</div>
 <p>Trong AI: với biến ngẫu nhiên liên tục, <b>xác suất là diện tích</b> dưới hàm mật độ (tổng diện tích bằng 1); chỉ số <b>AUC</b> cũng là một diện tích dưới đường cong.</p>
 `},
 
+{
+  id: 'A5.2', module: 'A', topic: 'A5', minutes: 20,
+  title: 'Gradient descent: các bài toán trong bộ đề (cập nhật w, b, tính gradient một nơ-ron)',
+  skills: [],
+  // Bài tổng hợp: luyện đúng các câu gradient descent có trong bộ đề; câu vẫn thuộc dạng đề của A5.1/C5.1/C5.2.
+  questionIds: ["N26E04-C03","N26E08-C05","N26E04-C02","N26E08-C04","N26E14-A20","N26E15-A20","N26E16-A20","N26E04-C01","N26E04-C04","N26E03-C10","N26E07-C11","N26E09-C11","N26E13-C11","MLQ-015","MLQ-016","MLQ-017","MLQ-026","MLQ-027","MLQ-031","TS-c.backprop-extra-1","TS-c.backprop-extra-2","TS-c.backprop-extra-3","TS-c.backprop-extra-4","TS-ts.c-training-1"],
+  content: String.raw`
+<div class="box why"><span class="box-title">🎯 Bài này là gì?</span>
+Gom <b>mọi bài toán gradient descent có trong bộ đề</b> (AI-TEST và quiz ML/DL) về một chỗ: 3 công thức, các dạng tính giải từng bước, lý thuyết hay hỏi và khung tự luận. Đề mô phỏng ngày thi đầu có hẳn một câu tự luận cập nhật bias (câu 20 của Module A), nên đây là điểm dễ lấy. Lý thuyết nền về đạo hàm ở <a href="#/l/A5.1">A5.1</a>, về mạng nơ-ron ở <a href="#/l/C5.2">C5.2</a>.</div>
+
+<div class="box idea"><span class="box-title">💡 Hiểu nhanh</span>
+Gradient cho biết <b>hướng làm loss tăng nhanh nhất</b>. Muốn loss giảm thì đi <b>ngược</b> hướng đó một bước nhỏ, độ dài bước là learning rate. Giống người xuống dốc trong sương mù: dò xem chỗ đứng dốc lên phía nào, rồi bước về phía ngược lại.</div>
+
+<h2>1. Ba công thức cần thuộc</h2>
+<p><b>Cập nhật trọng số (hoặc bias):</b></p>
+$$w_{\text{mới}} = w - \eta \times \text{gradient}$$
+$$b_{\text{mới}} = b - \eta \times \frac{\partial L}{\partial b}$$
+<p><b>Gradient của một nơ-ron tuyến tính</b> \(\hat{y} = w x\) với loss \(L = \tfrac{1}{2}(\hat{y} - y)^2\):</p>
+$$\frac{\partial L}{\partial w} = (\hat{y} - y) \times x$$
+<p><b>Nhiều mẫu:</b> lấy <b>trung bình</b> gradient của các mẫu rồi mới cập nhật.</p>
+<div class="box trap"><span class="box-title">⚠️ Quy tắc dấu</span>
+Gradient <b>dương</b> thì tham số <b>giảm</b>. Gradient <b>âm</b> thì trừ đi một số âm, tức là <b>cộng</b>, nên tham số <b>tăng</b>. Câu tự luận hay hỏi "giải thích dấu cập nhật": trả lời là đi ngược hướng gradient để loss giảm.</div>
+
+<h2>2. Dạng 1: tính một bước cập nhật trọng số</h2>
+<div class="box example"><span class="box-title">📝 Đề N26E04-C03</span>
+w = 0,8; η = 0,05; gradient = 2. Tính w mới.<br>
+\(w_{\text{mới}} = 0{,}8 - 0{,}05 \times 2 = 0{,}8 - 0{,}1 = \) <b>0,7</b>. Gradient dương nên w giảm.</div>
+<div class="box example"><span class="box-title">📝 Đề N26E08-C05</span>
+w = 0,4; η = 0,1; gradient = −1,5.<br>
+\(w_{\text{mới}} = 0{,}4 - 0{,}1 \times (-1{,}5) = 0{,}4 + 0{,}15 = \) <b>0,55</b>. Gradient âm nên w tăng.</div>
+
+<h2>3. Dạng 2: tính gradient của một nơ-ron</h2>
+<p>Làm 2 bước: tính dự đoán \(\hat{y} = w x\), rồi nhân sai số với x.</p>
+<div class="box example"><span class="box-title">📝 Đề N26E04-C02</span>
+x = 2, w = 0,5, y = 3.<br>
+① \(\hat{y} = 0{,}5 \times 2 = 1\)<br>
+② \(\partial L / \partial w = (1 - 3) \times 2 = \) <b>−4</b>. Dự đoán thấp hơn thực tế nên gradient âm, bước sau w sẽ tăng.</div>
+<div class="box example"><span class="box-title">📝 Đề N26E08-C04</span>
+x = 3, w = 1, y = 2.<br>
+① \(\hat{y} = 1 \times 3 = 3\)<br>
+② \(\partial L / \partial w = (3 - 2) \times 3 = \) <b>3</b>.</div>
+<div class="box trap"><span class="box-title">⚠️ Bẫy</span>
+Quên nhân với x (ra −2 thay vì −4), hoặc đảo thành \((y - \hat{y})\) làm sai dấu. Thứ tự đúng là <b>dự đoán trừ thực tế</b>.</div>
+
+<h2>4. Dạng 3: cập nhật bias (câu tự luận 20 của đề ngày thi đầu)</h2>
+<table>
+<tr><th>Đề</th><th>Lời giải</th><th>Đáp án</th></tr>
+<tr><td>b = 0,5; lr = 0,1; db = −0,4</td><td>0,5 − 0,1 × (−0,4) = 0,5 + 0,04</td><td><b>0,54</b></td></tr>
+<tr><td>b = −0,2; lr = 0,05; db = 0,6</td><td>−0,2 − 0,05 × 0,6 = −0,2 − 0,03</td><td><b>−0,23</b></td></tr>
+<tr><td>b = 0,1; lr = 0,1; db của 3 mẫu là 0,2; −0,1; 0,5 (dùng trung bình)</td><td>Trung bình = (0,2 − 0,1 + 0,5) / 3 = 0,2 → 0,1 − 0,1 × 0,2</td><td><b>0,08</b></td></tr>
+</table>
+<div class="box tip"><span class="box-title">✍️ Khung trả lời (câu điền ngắn)</span>
+<ol><li>Viết công thức: \(b_{\text{mới}} = b - \text{lr} \times db\).</li>
+<li>Thay số, ghi phép tính chính (đề yêu cầu "không chỉ ghi đáp số").</li>
+<li>Kết luận dấu: "db âm nên b tăng" hoặc "db dương nên b giảm", vì đi ngược gradient để loss giảm.</li></ol></div>
+
+<h2>5. Lý thuyết hay hỏi</h2>
+<table>
+<tr><th>Câu hỏi</th><th>Đáp án</th></tr>
+<tr><td>Gradient descent dùng để làm gì?</td><td>Cập nhật trọng số để loss giảm</td></tr>
+<tr><td>Vai trò của backpropagation?</td><td>Tính gradient của loss theo từng trọng số (dùng quy tắc dây chuyền)</td></tr>
+<tr><td>Đạo hàm ReLU tại z = 4?</td><td>1 (z dương thì đạo hàm là 1, z âm thì là 0)</td></tr>
+<tr><td>Learning rate quá lớn?</td><td>Loss dao động hoặc tăng vọt, không hội tụ</td></tr>
+<tr><td>Learning rate quá nhỏ?</td><td>Học rất chậm, có thể kẹt lâu</td></tr>
+<tr><td>Vanishing gradient?</td><td>Gradient nhỏ dần về 0 qua nhiều lớp, hay gặp ở mạng rất sâu</td></tr>
+<tr><td>Exploding gradient?</td><td>Gradient lớn vọt; chữa bằng gradient clipping</td></tr>
+<tr><td>Momentum?</td><td>Cộng dồn hướng các bước trước, giảm nhiễu, đi nhanh và ổn định hơn</td></tr>
+<tr><td>Adam khác SGD?</td><td>Learning rate thích ứng cho từng tham số</td></tr>
+<tr><td>1000 mẫu, batch 100, 5 epoch: bao nhiêu lần cập nhật?</td><td>(1000 / 100) × 5 = 50</td></tr>
+</table>
+<p><b>Ba biến thể:</b> batch gradient descent dùng toàn bộ dữ liệu cho mỗi bước; SGD dùng từng mẫu; mini-batch dùng từng lô nhỏ (phổ biến nhất).</p>
+
+<h2>6. Tự luận lớn: "giải thích cách huấn luyện một neural network nhỏ"</h2>
+<p>Bộ đề có 4 câu cùng khuôn (phân loại câu hỏi, ticket, phản hồi với 5000–10000 mẫu, không dùng mạng sâu).</p>
+<div class="box tip"><span class="box-title">✍️ Khung trả lời</span>
+<ol>
+<li><b>Dữ liệu:</b> làm sạch, biến văn bản thành vector (TF-IDF hoặc embedding), chia train / validation / test.</li>
+<li><b>Mô hình:</b> 1 lớp ẩn với ReLU, lớp ra softmax (nhiều lớp) hoặc sigmoid (2 lớp).</li>
+<li><b>Forward pass:</b> tính dự đoán từ đầu vào qua từng lớp.</li>
+<li><b>Loss:</b> cross-entropy, đo độ sai giữa dự đoán và nhãn.</li>
+<li><b>Backpropagation:</b> dùng quy tắc dây chuyền tính gradient của loss theo mọi trọng số.</li>
+<li><b>Cập nhật:</b> \(w = w - \eta \times \text{gradient}\), theo từng mini-batch, lặp nhiều epoch.</li>
+<li><b>Theo dõi:</b> loss trên validation tăng trong khi loss train vẫn giảm là overfitting → dừng sớm hoặc thêm regularization; chọn learning rate vừa phải.</li>
+<li><b>Đánh giá:</b> accuracy, precision, recall, F1 trên tập test.</li>
+</ol></div>
+`,
+},
+
 // ======================= A6 TƯ DUY ĐỊNH LƯỢNG =======================
 {
   id: 'A6.1', module: 'A', topic: 'A6', minutes: 22,
   title: 'Tư duy định lượng: ước lượng nhanh, tốc độ, tăng trưởng, đọc bảng & biểu đồ',
-  skills: ['ts.quant'],
+  skills: ['ts.quant', 'ts.quant-fermi', 'ts.quant-rate', 'ts.quant-growth', 'ts.quant-chart', 'ts.quant-open'],
   content: String.raw`
 <div class="box why"><span class="box-title">🎯 Vì sao cần?</span>
 Tên Module A có hẳn vế <b>"Tư duy Định lượng"</b>: khả năng suy nghĩ bằng con số trong tình huống thực, không cần công thức phức tạp. Người làm AI dùng nó hằng ngày: ước lượng chi phí, thời gian huấn luyện, đọc số liệu và phát hiện con số vô lý.</div>
